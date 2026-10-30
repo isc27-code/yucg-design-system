@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 /* ===== Library CSS: extracted verbatim from design.md section 11 at build time ===== */
 {{LIB_CSS}}
@@ -373,7 +373,23 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
   <!-- ================= Data ================= -->
   <h2 class="g-group-title" data-group="Data">Data</h2>
 
-  <article class="g-entry" id="yucg-kpis" data-name="yucg-kpis" data-title="KPI row" data-use="Headline numbers for dashboards and results, split by hairlines.">
+  <article class="g-entry" id="yucg-chart-tokens" data-name="yucg-chart-tokens" data-title="Chart tokens" data-use="Lato, the #00346B chart text color and the studio palette. Include once with any chart. Swatch classes set --c for every graph component.">
+    <div class="g-demo">
+      <div class="yucg-chart-block">
+        <div class="yucg-legend" style="justify-content:flex-start">
+          <span><i class="is-c1"></i>chart-1 navy</span><span><i class="is-c2"></i>chart-2 mid blue</span><span><i class="is-c3"></i>chart-3 sky</span><span><i class="is-c4"></i>chart-4 slate</span>
+          <span><i class="is-c5"></i>chart-5 steel</span><span><i class="is-c6"></i>chart-6 pale blue</span><span><i class="is-c7"></i>chart-7 deep navy</span><span><i class="is-c8"></i>chart-8 mist blue</span>
+        </div>
+        <div class="yucg-legend" style="justify-content:flex-start">
+          <span><i class="is-focus"></i>Focus</span><span><i class="is-context"></i>Context</span>
+          <span><i style="--c:var(--yucg-seq-1)"></i>seq-1</span><span><i style="--c:var(--yucg-seq-2)"></i>seq-2</span><span><i style="--c:var(--yucg-seq-3)"></i>seq-3</span><span><i style="--c:var(--yucg-seq-4)"></i>seq-4</span><span><i style="--c:var(--yucg-seq-5)"></i>seq-5</span>
+        </div>
+        <p style="font:400 14.7px/1.4 var(--yucg-font-chart);color:var(--yucg-chart-text)">Every word in a chart is Lato in #00346B. Aa Bb Cc 0123456789</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-kpis" data-name="yucg-kpis" data-title="KPI row" data-use="Headline numbers for dashboards and results, split by hairlines. Page UI, so it stays in the website serif.">
     <div class="g-demo">
       <div class="yucg-kpis">
         <div><strong>260</strong><span>Posts analyzed</span></div>
@@ -384,57 +400,77 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
     </div>
   </article>
 
-  <article class="g-entry" id="yucg-chart-block" data-name="yucg-chart-block" data-title="Chart block" data-use="Wrapper for any chart: navy serif title and a muted subtitle above the chart.">
+  <article class="g-entry" id="yucg-chart-block" data-name="yucg-chart-block" data-title="Chart block" data-use="The studio layout for any chart: centered takeaway title and subtitle, centered legend, the chart, then the source line bottom left. Transparent, no logo.">
     <div class="g-demo">
       <figure class="yucg-chart-block">
-        <figcaption><strong>Analyses by tool</strong><span>Last 30 days, example figures</span></figcaption>
+        <figcaption><strong>Reddit Analyzer drives half of all analyses</strong><span>Analyses run by tool, last 30 days</span></figcaption>
+        <div class="yucg-legend"><span><i class="is-focus"></i>Most used</span><span><i class="is-context"></i>Other tools</span></div>
         <div class="yucg-bars">
-          <div><span>Reddit Analyzer</span><i style="width:100%"></i><b>96</b></div>
-          <div><span>Sentiment Analyzer</span><i style="width:64%"></i><b>61</b></div>
-          <div><span>Google Reviews</span><i style="width:57%"></i><b>55</b></div>
+          <div><span>Reddit Analyzer</span><i class="is-focus" style="width:100%"></i><b>96</b></div>
+          <div><span>Sentiment Analyzer</span><i class="is-context" style="width:64%"></i><b>61</b></div>
+          <div><span>Google Reviews</span><i class="is-context" style="width:57%"></i><b>55</b></div>
         </div>
+        <p class="yucg-chart-source">Source: YUCG Analytics logs; YUCG analysis. Example data</p>
       </figure>
     </div>
   </article>
 
-  <article class="g-entry" id="yucg-bars" data-name="yucg-bars" data-title="Bars" data-use="Horizontal bars in plain HTML. Width is a percentage of the largest value. .is-secondary turns a bar gray.">
+  <article class="g-entry" id="yucg-legend" data-name="yucg-legend" data-title="Legend" data-use="Centered under the title. Square swatches for bars; is-line for line samples, plus is-dotted for fitted or forecast series.">
     <div class="g-demo">
-      <div class="yucg-bars">
-        <div><span>Consulting</span><i style="width:100%"></i><b>42%</b></div>
-        <div><span>Finance</span><i style="width:62%"></i><b>26%</b></div>
-        <div><span>Technology</span><i style="width:43%"></i><b>18%</b></div>
-        <div><span>Other</span><i class="is-secondary" style="width:33%"></i><b>14%</b></div>
+      <div class="yucg-legend">
+        <span><i class="is-line is-c1"></i>Actual</span><span><i class="is-line is-dotted is-c1"></i>Fitted</span>
+        <span><i class="is-line is-c2"></i>Forecast base</span><span><i class="is-c3"></i>Bar series</span>
       </div>
-      <p class="g-caption" style="margin-top:16px">Example figures.</p>
     </div>
   </article>
 
-  <article class="g-entry" id="yucg-diverging" data-name="yucg-diverging" data-title="Diverging bars" data-use="Scores from −1 to +1. Positive grows right in navy, negative grows left in gray. Use divStyle(v) for the inline style.">
-    <div class="g-demo">
-      <div class="yucg-diverging" id="d-div"></div>
-    </div>
-  </article>
-
-  <article class="g-entry" id="yucg-mix" data-name="yucg-mix" data-title="Mix bar and legend" data-use="100% stacked bar for shares such as positive, neutral and negative, with square legend swatches (yucg-legend).">
-    <div class="g-demo g-stack" style="gap:14px">
-      <div class="yucg-mix" role="img" aria-label="Positive 58%, neutral 27%, negative 15%"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
-      <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
-    </div>
-  </article>
-
-  <article class="g-entry" id="yucg-line-chart" data-name="yucg-line-chart" data-title="Line chart" data-use="SVG from yucgLineChart(): dashed light gridlines, square endpoint, optional navy area fill, second series in gray." data-code="document.querySelector('#chart').innerHTML = yucgLineChart({
-  labels: ['Oct 1', 'Oct 2', …],
-  series: [
-    { values: visits, color: '#1C366A', area: true },
-    { values: runs,   color: '#A0A09F' }
-  ]
-});">
+  <article class="g-entry" id="yucg-bars" data-name="yucg-bars" data-title="Bars" data-use="Horizontal bars with a thin baseline, navy by default. Use is-c2…is-c8 for categories, or is-focus and is-context to highlight one bar.">
     <div class="g-demo">
       <figure class="yucg-chart-block">
-        <figcaption><strong>Daily visits and analyses</strong><span>Last 30 days, example figures</span></figcaption>
-        <div id="d-line"></div>
-        <div class="yucg-legend"><span><i class="is-pos"></i>Visits</span><span><i class="is-neu"></i>Analyses run</span></div>
+        <figcaption><strong>Consulting is the top destination for alumni</strong><span>First role after YUCG, share of alumni</span></figcaption>
+        <div class="yucg-bars">
+          <div><span>Consulting</span><i style="width:100%"></i><b>42%</b></div>
+          <div><span>Finance</span><i class="is-c2" style="width:62%"></i><b>26%</b></div>
+          <div><span>Technology</span><i class="is-c3" style="width:43%"></i><b>18%</b></div>
+          <div><span>Other</span><i class="is-c5" style="width:33%"></i><b>14%</b></div>
+        </div>
+        <p class="yucg-chart-source">Example data</p>
       </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-diverging" data-name="yucg-diverging" data-title="Diverging bars" data-use="Scores from −1 to +1. Positive grows right in navy, negative grows left in sky, and the signed value always shows. Use divStyle(v) for the inline style.">
+    <div class="g-demo">
+      <figure class="yucg-chart-block">
+        <figcaption><strong>Three of four interviewees lean positive</strong><span>Mean sentence sentiment toward the client, −1 to +1</span></figcaption>
+        <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neg"></i>Negative</span></div>
+        <div class="yucg-diverging" id="d-div"></div>
+        <p class="yucg-chart-source">Example data</p>
+      </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-mix" data-name="yucg-mix" data-title="Mix bar" data-use="100% stacked bar for shares. Sentiment uses navy, context gray and sky; other shares use is-c1…is-c8 in order.">
+    <div class="g-demo">
+      <figure class="yucg-chart-block">
+        <figcaption><strong>Most posts about the airline are positive</strong><span>Share of posts by sentiment, n = 260</span></figcaption>
+        <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
+        <div class="yucg-mix" role="img" aria-label="Positive 58%, neutral 27%, negative 15%"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
+        <p class="yucg-chart-source">Source: Reddit; YUCG analysis. Example data</p>
+      </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-line-chart" data-name="yucg-line-chart" data-title="Line chart" data-use="yucgLineChart() and yucgLegend(): dashed gridlines, no axis line, 2.8px lines without markers, rotated y-axis title. A fitted or forecast series is dotted in its actual series' color." data-code="const series = [{ name: 'Actual', values: actual }, { name: 'Fitted', values: fitted }];
+chart.innerHTML = `
+  <figure class=&quot;yucg-chart-block&quot;>
+    <figcaption><strong>Arrivals track the model closely</strong><span>Monthly arrivals, millions</span></figcaption>
+    ${yucgLegend(series)}
+    ${yucgLineChart({ labels: months, series, yTitle: 'Arrivals (Millions)' })}
+    <p class=&quot;yucg-chart-source&quot;>Source: …; YUCG analysis</p>
+  </figure>`;">
+    <div class="g-demo">
+      <div id="d-line"></div>
     </div>
   </article>
 
@@ -511,7 +547,8 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
         <div>
           <div class="yucg-kpis"><div><strong>260</strong><span>Posts</span></div><div><strong>+0.21</strong><span>Mean sentiment</span></div><div><strong>58%</strong><span>Positive</span></div></div>
           <figure class="yucg-chart-block">
-            <figcaption><strong>Sentiment mix</strong><span>Example figures</span></figcaption>
+            <figcaption><strong>Most posts are positive</strong><span>Share of posts by sentiment, n = 260</span></figcaption>
+            <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
             <div class="yucg-mix"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
           </figure>
         </div>
@@ -603,13 +640,18 @@ $$('.g-entry').forEach(e => io.observe(e));
 
 // demo data
 $('#d-div').innerHTML = [['Erin Yoon', .42], ['Marcus Lee', -.12], ['Priya Shah', .63], ['Jordan Park', -.38]]
-  .map(([n, v]) => `<div><span>${n}</span><p><i class="${v < 0 ? 'is-neg' : ''}" style="${divStyle(v)}"></i></p><b>${(v > 0 ? '+' : '−') + Math.abs(v).toFixed(2)}</b></div>`).join('');
+  .map(([n, v]) => `<div><span>${n}</span><p><i class="${v < 0 ? 'is-neg' : 'is-pos'}" style="${divStyle(v)}"></i></p><b>${(v > 0 ? '+' : '−') + Math.abs(v).toFixed(2)}</b></div>`).join('');
 {
   let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
-  const labels = Array.from({ length: 30 }, (_, i) => `Oct ${i + 1}`);
-  const visits = labels.map((_, i) => Math.round(30 + 14 * Math.sin(i / 3.2) + i * .9 + r() * 14));
-  const runs = visits.map(v => Math.round(v * (.15 + r() * .1)));
-  $('#d-line').innerHTML = yucgLineChart({ labels, series: [{ values: visits, color: '#1C366A', area: true }, { values: runs, color: '#A0A09F' }] });
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const base = [1.6, 1.9, 2.6, 3.4, 4.6, 5.6, 6.9, 7.1, 5.9, 4.4, 2.5, 1.9];
+  const actual = base.map(v => +(v + (r() - .5) * .7).toFixed(2));
+  const series = [{ name: 'Actual', values: actual }, { name: 'Fitted', values: base }];
+  $('#d-line').innerHTML = `<figure class="yucg-chart-block">
+    <figcaption><strong>Arrivals track the seasonal model closely</strong><span>Monthly international arrivals, millions</span></figcaption>
+    ${yucgLegend(series)}
+    ${yucgLineChart({ labels: months, series, yTitle: 'Arrivals (Millions)', max: 8 })}
+    <p class="yucg-chart-source">Example data</p></figure>`;
 }
 $('#d-files').addEventListener('change', e => $('#d-files-msg').textContent = `${e.target.files.length} file(s) selected`);
 $('#yucg-dropzone .yucg-dropzone').addEventListener('drop', e => $('#d-files-msg').textContent = `${e.dataTransfer.files.length} file(s) dropped`);

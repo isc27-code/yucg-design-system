@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
 /* ===== Library CSS: extracted verbatim from design.md section 11 at build time ===== */
 :root {
@@ -209,6 +209,26 @@ img { max-width: 100%; display: block; }
 .yucg-form-group > legend { width: 100%; padding: 0 0 8px; margin-bottom: 18px; border-bottom: 1px solid var(--yucg-navy);
   font: 700 20px/1.4 var(--yucg-font-display); color: var(--yucg-navy); }
 
+:root {
+  --yucg-font-chart: "Lato", "Helvetica Neue", Arial, sans-serif;
+  --yucg-chart-text: #00346B;                   /* every word in a chart */
+  --yucg-chart-1: #1C366A;  --yucg-chart-2: #3465A8;  --yucg-chart-3: #7AA7D6;  --yucg-chart-4: #445469;
+  --yucg-chart-5: #909AB1;  --yucg-chart-6: #C4D4E8;  --yucg-chart-7: #0B1F3A;  --yucg-chart-8: #DFE6EF;
+  --yucg-chart-focus: #1C366A;
+  --yucg-chart-context: #C9CED6;
+  --yucg-chart-grid: rgba(0, 52, 107, .6);      /* dashed, 0.8px, horizontal only */
+  --yucg-chart-axis: rgba(0, 52, 107, .6);      /* bar baselines; line charts have none */
+  --yucg-seq-1: #F1F5FA;  --yucg-seq-2: #C4D4E8;  --yucg-seq-3: #7AA7D6;  --yucg-seq-4: #1164A3;  --yucg-seq-5: #1C366A;
+}
+/* Series swatch classes: set --c, which every graph component paints with */
+.is-c1 { --c: var(--yucg-chart-1); } .is-c2 { --c: var(--yucg-chart-2); } .is-c3 { --c: var(--yucg-chart-3); } .is-c4 { --c: var(--yucg-chart-4); }
+.is-c5 { --c: var(--yucg-chart-5); } .is-c6 { --c: var(--yucg-chart-6); } .is-c7 { --c: var(--yucg-chart-7); } .is-c8 { --c: var(--yucg-chart-8); }
+.is-focus { --c: var(--yucg-chart-focus); }
+.is-context, .is-secondary { --c: var(--yucg-chart-context); }
+.is-pos { --c: var(--yucg-chart-1); }         /* sentiment: positive */
+.is-neu { --c: var(--yucg-chart-context); }   /* neutral */
+.is-neg { --c: var(--yucg-chart-3); }         /* negative */
+
 .yucg-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); row-gap: 20px; }
 .yucg-kpis > div { padding: 4px 20px; display: flex; flex-direction: column; }
 .yucg-kpis > div:first-child { padding-left: 0; }
@@ -216,38 +236,49 @@ img { max-width: 100%; display: block; }
 .yucg-kpis strong { font: 700 clamp(28px, 3.4vw, 38px)/1.2 var(--yucg-font-display); color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
 .yucg-kpis span { font-size: 14px; color: var(--yucg-muted); }
 
-.yucg-chart-block { margin: 0; display: flex; flex-direction: column; gap: 14px; }
-.yucg-chart-block figcaption { display: flex; flex-direction: column; gap: 2px; }
-.yucg-chart-block figcaption strong { font: 700 20px/1.4 var(--yucg-font-display); color: var(--yucg-navy); }
-.yucg-chart-block figcaption span { font-size: 14px; color: var(--yucg-muted); }
+.yucg-chart-block { margin: 0; display: flex; flex-direction: column; gap: 14px; background: transparent;
+  font-family: var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-chart-block figcaption { display: flex; flex-direction: column; gap: 4px; text-align: center; }
+.yucg-chart-block figcaption strong { font: 700 clamp(18px, 2.2vw, 24px)/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); text-wrap: balance; }
+.yucg-chart-block figcaption span { font: 400 14.7px/1.4 var(--yucg-font-chart); }
+.yucg-chart-source { margin: 0; font: 400 11.7px/1.4 var(--yucg-font-chart); color: var(--yucg-chart-text); text-align: left; }
 
-.yucg-bars { display: flex; flex-direction: column; gap: 10px; }
-.yucg-bars > div { display: grid; grid-template-columns: minmax(90px, 170px) minmax(0, 1fr) 56px; gap: 14px; align-items: center; font-size: 15px; }
-.yucg-bars i { display: block; height: 18px; background: var(--yucg-navy); }
-.yucg-bars i.is-secondary { background: var(--yucg-gray); }
-.yucg-bars b { text-align: right; color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+.yucg-legend { display: flex; justify-content: center; gap: 8px 22px; flex-wrap: wrap;
+  font: 400 13.5px/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.yucg-legend i { width: 12px; height: 12px; display: inline-block; background: var(--c, var(--yucg-chart-1)); }
+.yucg-legend i.is-line { width: 28px; height: 0; background: none; border-top: 2.8px solid var(--c, var(--yucg-chart-1)); }
+.yucg-legend i.is-dotted { border-top-style: dotted; }
 
-.yucg-diverging { display: flex; flex-direction: column; gap: 10px; }
-.yucg-diverging > div { display: grid; grid-template-columns: minmax(90px, 160px) minmax(0, 1fr) 52px; gap: 14px; align-items: center; font-size: 15px; }
-.yucg-diverging p { position: relative; height: 18px; margin: 0;
-  background: linear-gradient(var(--yucg-rule), var(--yucg-rule)) center / 1px 100% no-repeat; }
-.yucg-diverging i { position: absolute; top: 2px; bottom: 2px; background: var(--yucg-navy); }
-.yucg-diverging i.is-neg { background: var(--yucg-gray); }
-.yucg-diverging b { text-align: right; color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+.yucg-bars { --label-w: 150px; position: relative; display: flex; flex-direction: column; gap: 8px;
+  font: 400 12.5px/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-bars::before { content: ""; position: absolute; top: -4px; bottom: -4px; left: calc(var(--label-w) + 12px);
+  border-left: 1px solid var(--yucg-chart-axis); }                         /* thin baseline */
+.yucg-bars > div { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr) 48px; gap: 12px; align-items: center; }
+.yucg-bars span { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yucg-bars i { display: block; height: 20px; background: var(--c, var(--yucg-chart-1)); }
+.yucg-bars b { font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .yucg-bars { --label-w: 96px; } }
+
+.yucg-diverging { --label-w: 150px; display: flex; flex-direction: column; gap: 8px;
+  font: 400 12.5px/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-diverging > div { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr) 48px; gap: 12px; align-items: center; }
+.yucg-diverging span { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yucg-diverging p { position: relative; height: 20px; margin: 0;
+  background: linear-gradient(var(--yucg-chart-axis), var(--yucg-chart-axis)) center / 1px 100% no-repeat; }  /* zero line */
+.yucg-diverging i { position: absolute; top: 0; bottom: 0; background: var(--c, var(--yucg-chart-1)); }
+.yucg-diverging b { font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .yucg-diverging { --label-w: 96px; } }
 
 .yucg-mix { display: flex; height: 36px; }
-.yucg-mix i { display: flex; align-items: center; justify-content: center; font: 400 13px/1 var(--yucg-font-body);
-  font-style: normal; color: var(--yucg-white); overflow: hidden; font-variant-numeric: tabular-nums; }
-.is-pos { background: var(--yucg-navy); }
-.is-neu { background: var(--yucg-gray); }
-.is-neg { background: var(--yucg-navy-20); }
-.yucg-mix i.is-neg { color: var(--yucg-navy); }
-.yucg-legend { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; }
-.yucg-legend span { display: inline-flex; align-items: center; gap: 8px; }
-.yucg-legend i { width: 12px; height: 12px; display: inline-block; }   /* square swatches */
+.yucg-mix i { display: flex; align-items: center; justify-content: center; overflow: hidden;
+  font: 700 12.5px/1 var(--yucg-font-chart); font-style: normal; font-variant-numeric: tabular-nums;
+  background: var(--c, var(--yucg-chart-1)); color: var(--yucg-chart-text); }
+.yucg-mix i:is(.is-pos, .is-focus, .is-c1, .is-c2, .is-c4, .is-c7) { color: #FFFFFF; }   /* white on dark fills */
 
-.yucg-line-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
-.yucg-line-chart text { font-family: var(--yucg-font-body); font-size: 12px; fill: var(--yucg-ink); }
+.yucg-line-chart svg { width: 100%; height: auto; display: block; overflow: visible; background: transparent; }
+.yucg-line-chart text { font-family: var(--yucg-font-chart); font-size: 12px; fill: var(--yucg-chart-text); }
+.yucg-line-chart .y-title { font-size: 12.5px; font-weight: 700; }
 
 .yucg-table { overflow-x: auto; }
 .yucg-table table { border-collapse: collapse; width: 100%; font-size: 15px; }
@@ -649,7 +680,23 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
   <!-- ================= Data ================= -->
   <h2 class="g-group-title" data-group="Data">Data</h2>
 
-  <article class="g-entry" id="yucg-kpis" data-name="yucg-kpis" data-title="KPI row" data-use="Headline numbers for dashboards and results, split by hairlines.">
+  <article class="g-entry" id="yucg-chart-tokens" data-name="yucg-chart-tokens" data-title="Chart tokens" data-use="Lato, the #00346B chart text color and the studio palette. Include once with any chart. Swatch classes set --c for every graph component.">
+    <div class="g-demo">
+      <div class="yucg-chart-block">
+        <div class="yucg-legend" style="justify-content:flex-start">
+          <span><i class="is-c1"></i>chart-1 navy</span><span><i class="is-c2"></i>chart-2 mid blue</span><span><i class="is-c3"></i>chart-3 sky</span><span><i class="is-c4"></i>chart-4 slate</span>
+          <span><i class="is-c5"></i>chart-5 steel</span><span><i class="is-c6"></i>chart-6 pale blue</span><span><i class="is-c7"></i>chart-7 deep navy</span><span><i class="is-c8"></i>chart-8 mist blue</span>
+        </div>
+        <div class="yucg-legend" style="justify-content:flex-start">
+          <span><i class="is-focus"></i>Focus</span><span><i class="is-context"></i>Context</span>
+          <span><i style="--c:var(--yucg-seq-1)"></i>seq-1</span><span><i style="--c:var(--yucg-seq-2)"></i>seq-2</span><span><i style="--c:var(--yucg-seq-3)"></i>seq-3</span><span><i style="--c:var(--yucg-seq-4)"></i>seq-4</span><span><i style="--c:var(--yucg-seq-5)"></i>seq-5</span>
+        </div>
+        <p style="font:400 14.7px/1.4 var(--yucg-font-chart);color:var(--yucg-chart-text)">Every word in a chart is Lato in #00346B. Aa Bb Cc 0123456789</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-kpis" data-name="yucg-kpis" data-title="KPI row" data-use="Headline numbers for dashboards and results, split by hairlines. Page UI, so it stays in the website serif.">
     <div class="g-demo">
       <div class="yucg-kpis">
         <div><strong>260</strong><span>Posts analyzed</span></div>
@@ -660,57 +707,77 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
     </div>
   </article>
 
-  <article class="g-entry" id="yucg-chart-block" data-name="yucg-chart-block" data-title="Chart block" data-use="Wrapper for any chart: navy serif title and a muted subtitle above the chart.">
+  <article class="g-entry" id="yucg-chart-block" data-name="yucg-chart-block" data-title="Chart block" data-use="The studio layout for any chart: centered takeaway title and subtitle, centered legend, the chart, then the source line bottom left. Transparent, no logo.">
     <div class="g-demo">
       <figure class="yucg-chart-block">
-        <figcaption><strong>Analyses by tool</strong><span>Last 30 days, example figures</span></figcaption>
+        <figcaption><strong>Reddit Analyzer drives half of all analyses</strong><span>Analyses run by tool, last 30 days</span></figcaption>
+        <div class="yucg-legend"><span><i class="is-focus"></i>Most used</span><span><i class="is-context"></i>Other tools</span></div>
         <div class="yucg-bars">
-          <div><span>Reddit Analyzer</span><i style="width:100%"></i><b>96</b></div>
-          <div><span>Sentiment Analyzer</span><i style="width:64%"></i><b>61</b></div>
-          <div><span>Google Reviews</span><i style="width:57%"></i><b>55</b></div>
+          <div><span>Reddit Analyzer</span><i class="is-focus" style="width:100%"></i><b>96</b></div>
+          <div><span>Sentiment Analyzer</span><i class="is-context" style="width:64%"></i><b>61</b></div>
+          <div><span>Google Reviews</span><i class="is-context" style="width:57%"></i><b>55</b></div>
         </div>
+        <p class="yucg-chart-source">Source: YUCG Analytics logs; YUCG analysis. Example data</p>
       </figure>
     </div>
   </article>
 
-  <article class="g-entry" id="yucg-bars" data-name="yucg-bars" data-title="Bars" data-use="Horizontal bars in plain HTML. Width is a percentage of the largest value. .is-secondary turns a bar gray.">
+  <article class="g-entry" id="yucg-legend" data-name="yucg-legend" data-title="Legend" data-use="Centered under the title. Square swatches for bars; is-line for line samples, plus is-dotted for fitted or forecast series.">
     <div class="g-demo">
-      <div class="yucg-bars">
-        <div><span>Consulting</span><i style="width:100%"></i><b>42%</b></div>
-        <div><span>Finance</span><i style="width:62%"></i><b>26%</b></div>
-        <div><span>Technology</span><i style="width:43%"></i><b>18%</b></div>
-        <div><span>Other</span><i class="is-secondary" style="width:33%"></i><b>14%</b></div>
+      <div class="yucg-legend">
+        <span><i class="is-line is-c1"></i>Actual</span><span><i class="is-line is-dotted is-c1"></i>Fitted</span>
+        <span><i class="is-line is-c2"></i>Forecast base</span><span><i class="is-c3"></i>Bar series</span>
       </div>
-      <p class="g-caption" style="margin-top:16px">Example figures.</p>
     </div>
   </article>
 
-  <article class="g-entry" id="yucg-diverging" data-name="yucg-diverging" data-title="Diverging bars" data-use="Scores from −1 to +1. Positive grows right in navy, negative grows left in gray. Use divStyle(v) for the inline style.">
-    <div class="g-demo">
-      <div class="yucg-diverging" id="d-div"></div>
-    </div>
-  </article>
-
-  <article class="g-entry" id="yucg-mix" data-name="yucg-mix" data-title="Mix bar and legend" data-use="100% stacked bar for shares such as positive, neutral and negative, with square legend swatches (yucg-legend).">
-    <div class="g-demo g-stack" style="gap:14px">
-      <div class="yucg-mix" role="img" aria-label="Positive 58%, neutral 27%, negative 15%"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
-      <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
-    </div>
-  </article>
-
-  <article class="g-entry" id="yucg-line-chart" data-name="yucg-line-chart" data-title="Line chart" data-use="SVG from yucgLineChart(): dashed light gridlines, square endpoint, optional navy area fill, second series in gray." data-code="document.querySelector('#chart').innerHTML = yucgLineChart({
-  labels: ['Oct 1', 'Oct 2', …],
-  series: [
-    { values: visits, color: '#1C366A', area: true },
-    { values: runs,   color: '#A0A09F' }
-  ]
-});">
+  <article class="g-entry" id="yucg-bars" data-name="yucg-bars" data-title="Bars" data-use="Horizontal bars with a thin baseline, navy by default. Use is-c2…is-c8 for categories, or is-focus and is-context to highlight one bar.">
     <div class="g-demo">
       <figure class="yucg-chart-block">
-        <figcaption><strong>Daily visits and analyses</strong><span>Last 30 days, example figures</span></figcaption>
-        <div id="d-line"></div>
-        <div class="yucg-legend"><span><i class="is-pos"></i>Visits</span><span><i class="is-neu"></i>Analyses run</span></div>
+        <figcaption><strong>Consulting is the top destination for alumni</strong><span>First role after YUCG, share of alumni</span></figcaption>
+        <div class="yucg-bars">
+          <div><span>Consulting</span><i style="width:100%"></i><b>42%</b></div>
+          <div><span>Finance</span><i class="is-c2" style="width:62%"></i><b>26%</b></div>
+          <div><span>Technology</span><i class="is-c3" style="width:43%"></i><b>18%</b></div>
+          <div><span>Other</span><i class="is-c5" style="width:33%"></i><b>14%</b></div>
+        </div>
+        <p class="yucg-chart-source">Example data</p>
       </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-diverging" data-name="yucg-diverging" data-title="Diverging bars" data-use="Scores from −1 to +1. Positive grows right in navy, negative grows left in sky, and the signed value always shows. Use divStyle(v) for the inline style.">
+    <div class="g-demo">
+      <figure class="yucg-chart-block">
+        <figcaption><strong>Three of four interviewees lean positive</strong><span>Mean sentence sentiment toward the client, −1 to +1</span></figcaption>
+        <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neg"></i>Negative</span></div>
+        <div class="yucg-diverging" id="d-div"></div>
+        <p class="yucg-chart-source">Example data</p>
+      </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-mix" data-name="yucg-mix" data-title="Mix bar" data-use="100% stacked bar for shares. Sentiment uses navy, context gray and sky; other shares use is-c1…is-c8 in order.">
+    <div class="g-demo">
+      <figure class="yucg-chart-block">
+        <figcaption><strong>Most posts about the airline are positive</strong><span>Share of posts by sentiment, n = 260</span></figcaption>
+        <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
+        <div class="yucg-mix" role="img" aria-label="Positive 58%, neutral 27%, negative 15%"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
+        <p class="yucg-chart-source">Source: Reddit; YUCG analysis. Example data</p>
+      </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-line-chart" data-name="yucg-line-chart" data-title="Line chart" data-use="yucgLineChart() and yucgLegend(): dashed gridlines, no axis line, 2.8px lines without markers, rotated y-axis title. A fitted or forecast series is dotted in its actual series' color." data-code="const series = [{ name: 'Actual', values: actual }, { name: 'Fitted', values: fitted }];
+chart.innerHTML = `
+  <figure class=&quot;yucg-chart-block&quot;>
+    <figcaption><strong>Arrivals track the model closely</strong><span>Monthly arrivals, millions</span></figcaption>
+    ${yucgLegend(series)}
+    ${yucgLineChart({ labels: months, series, yTitle: 'Arrivals (Millions)' })}
+    <p class=&quot;yucg-chart-source&quot;>Source: …; YUCG analysis</p>
+  </figure>`;">
+    <div class="g-demo">
+      <div id="d-line"></div>
     </div>
   </article>
 
@@ -787,7 +854,8 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
         <div>
           <div class="yucg-kpis"><div><strong>260</strong><span>Posts</span></div><div><strong>+0.21</strong><span>Mean sentiment</span></div><div><strong>58%</strong><span>Positive</span></div></div>
           <figure class="yucg-chart-block">
-            <figcaption><strong>Sentiment mix</strong><span>Example figures</span></figcaption>
+            <figcaption><strong>Most posts are positive</strong><span>Share of posts by sentiment, n = 260</span></figcaption>
+            <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
             <div class="yucg-mix"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
           </figure>
         </div>
@@ -820,29 +888,58 @@ document.querySelectorAll('.yucg-dropzone').forEach(z => {
   // on 'drop', read e.dataTransfer.files
 });
 
-// value in [-1, 1] → inline style for the <i>
+// value in [-1, 1] → inline style for the <i>; add class="is-neg" when v < 0
 const divStyle = v => `left:${v >= 0 ? 50 : 50 + v * 50}%;width:${Math.abs(v) * 50}%`;
 
-// yucgLineChart({ labels: [...], series: [{ values: [...], color: '#1C366A', area: true }], min: 0, max })
-function yucgLineChart({ labels, series, min = 0, max, fmtY = v => v.toLocaleString('en-US') }) {
-  const W = 720, H = 250, m = { t: 14, r: 18, b: 30, l: 46 };
+const YUCG_CHART = ['#1C366A', '#3465A8', '#7AA7D6', '#445469', '#909AB1', '#C4D4E8', '#0B1F3A', '#DFE6EF'];
+const yucgIsDotted = name => /fitted|forecast|projected|estimated/i.test(name || '');
+// Studio color order; a dotted series reuses the color of the series before it. Never cycles past chart-8.
+function yucgSeriesColors(series) {
+  let k = 0, last;
+  return series.map(s => {
+    if (s.color) return (last = s.color);
+    if (yucgIsDotted(s.name) && last) return last;
+    return (last = YUCG_CHART[Math.min(k++, 7)]);
+  });
+}
+// yucgLegend(series, 'line' | 'bar') → centered legend markup
+function yucgLegend(series, kind = 'line') {
+  const c = yucgSeriesColors(series);
+  return `<div class="yucg-legend">${series.map((s, i) =>
+    `<span><i class="${kind === 'line' ? 'is-line' + (yucgIsDotted(s.name) ? ' is-dotted' : '') : ''}" style="--c:${c[i]}"></i>${s.name}</span>`).join('')}</div>`;
+}
+// yucgLineChart({ labels: [...], series: [{ name, values, color? }], min, max, yTitle, fmtY })
+function yucgLineChart({ labels, series, min = 0, max, yTitle = '', fmtY = v => v.toLocaleString('en-US') }) {
+  const W = 720, H = 280, m = { t: 12, r: 16, b: 34, l: yTitle ? 72 : 48 };
   const hi = max ?? (v => { const p = 10 ** Math.floor(Math.log10(v || 1)); return Math.ceil(v / p) * p; })(Math.max(...series.flatMap(s => s.values)));
   const x = i => m.l + (W - m.l - m.r) * i / Math.max(labels.length - 1, 1);
   const y = v => H - m.b - (H - m.t - m.b) * (v - min) / (hi - min);
+  const colors = yucgSeriesColors(series);
   let g = '';
-  for (let k = 0; k <= 4; k++) { const v = min + (hi - min) * k / 4;
-    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#E2E2E1" stroke-dasharray="${v === 0 ? 0 : '3 4'}"/>`
-       + `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${fmtY(v)}</text>`; }
+  for (let k = 0; k <= 4; k++) {
+    const v = min + (hi - min) * k / 4;
+    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(0,52,107,.6)" stroke-width=".8" stroke-dasharray="4 4"/>`
+       + `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${fmtY(v)}</text>`;
+  }
+  if (yTitle) g += `<text class="y-title" transform="rotate(-90)" x="${-(m.t + (H - m.t - m.b) / 2)}" y="16" text-anchor="middle">${yTitle}</text>`;
   const step = Math.ceil(labels.length / 8);
-  labels.forEach((l, i) => { if (i % step === 0 || i === labels.length - 1) g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${l}</text>`; });
-  series.forEach(s => {
-    const d = s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join('');
-    if (s.area) g += `<path d="${d}L${x(s.values.length - 1)},${y(Math.max(min, 0))}L${x(0)},${y(Math.max(min, 0))}Z" fill="rgba(28,54,106,.08)"/>`;
-    g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.25"${s.dash ? ' stroke-dasharray="5 5"' : ''}/>`;
-    const li = s.values.length - 1; g += `<rect x="${x(li) - 4}" y="${y(s.values[li]) - 4}" width="8" height="8" fill="${s.color}"/>`;
+  labels.forEach((l, i) => { if (i % step === 0 || i === labels.length - 1) g += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${l}</text>`; });
+  series.forEach((s, n) => {
+    const d = s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+    const dots = yucgIsDotted(s.name) ? ' stroke-dasharray="0.1 6" stroke-linecap="round"' : '';
+    g += `<path d="${d}" fill="none" stroke="${colors[n]}" stroke-width="2.8" stroke-linejoin="round"${dots}/>`;
   });
-  return `<div class="yucg-line-chart"><svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg></div>`;
+  return `<div class="yucg-line-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${series.map(s => s.name).join(', ')}">${g}</svg></div>`;
 }
+
+const series = [{ name: 'Actual', values: actual }, { name: 'Fitted', values: fitted }];
+document.querySelector('#chart').innerHTML = `
+  <figure class="yucg-chart-block">
+    <figcaption><strong>Arrivals track the model closely</strong><span>Monthly arrivals, millions</span></figcaption>
+    ${yucgLegend(series)}
+    ${yucgLineChart({ labels: months, series, yTitle: 'Arrivals (Millions)' })}
+    <p class="yucg-chart-source">Source: Turkish Ministry of Culture and Tourism; YUCG analysis</p>
+  </figure>`;
 
 </script>
 <script>
@@ -915,13 +1012,18 @@ $$('.g-entry').forEach(e => io.observe(e));
 
 // demo data
 $('#d-div').innerHTML = [['Erin Yoon', .42], ['Marcus Lee', -.12], ['Priya Shah', .63], ['Jordan Park', -.38]]
-  .map(([n, v]) => `<div><span>${n}</span><p><i class="${v < 0 ? 'is-neg' : ''}" style="${divStyle(v)}"></i></p><b>${(v > 0 ? '+' : '−') + Math.abs(v).toFixed(2)}</b></div>`).join('');
+  .map(([n, v]) => `<div><span>${n}</span><p><i class="${v < 0 ? 'is-neg' : 'is-pos'}" style="${divStyle(v)}"></i></p><b>${(v > 0 ? '+' : '−') + Math.abs(v).toFixed(2)}</b></div>`).join('');
 {
   let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
-  const labels = Array.from({ length: 30 }, (_, i) => `Oct ${i + 1}`);
-  const visits = labels.map((_, i) => Math.round(30 + 14 * Math.sin(i / 3.2) + i * .9 + r() * 14));
-  const runs = visits.map(v => Math.round(v * (.15 + r() * .1)));
-  $('#d-line').innerHTML = yucgLineChart({ labels, series: [{ values: visits, color: '#1C366A', area: true }, { values: runs, color: '#A0A09F' }] });
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const base = [1.6, 1.9, 2.6, 3.4, 4.6, 5.6, 6.9, 7.1, 5.9, 4.4, 2.5, 1.9];
+  const actual = base.map(v => +(v + (r() - .5) * .7).toFixed(2));
+  const series = [{ name: 'Actual', values: actual }, { name: 'Fitted', values: base }];
+  $('#d-line').innerHTML = `<figure class="yucg-chart-block">
+    <figcaption><strong>Arrivals track the seasonal model closely</strong><span>Monthly international arrivals, millions</span></figcaption>
+    ${yucgLegend(series)}
+    ${yucgLineChart({ labels: months, series, yTitle: 'Arrivals (Millions)', max: 8 })}
+    <p class="yucg-chart-source">Example data</p></figure>`;
 }
 $('#d-files').addEventListener('change', e => $('#d-files-msg').textContent = `${e.target.files.length} file(s) selected`);
 $('#yucg-dropzone .yucg-dropzone').addEventListener('drop', e => $('#d-files-msg').textContent = `${e.dataTransfer.files.length} file(s) dropped`);

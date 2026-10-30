@@ -142,15 +142,39 @@ Section 11 turns each of these into a ready-to-use component, and adds the UI pi
 
 ## 10. Applying to Charts & Slides
 
-- Primary series: `#1C366A`; secondary: `#A0A09F`; tertiary: tints of navy (72%, 45%, 20% opacity on white).
-- Chart titles in YaleNew Bold, navy; axis labels and annotations in YaleNew Roman, ink.
-- White backgrounds, no gridline clutter, no 3D or shadows.
+Charts and slides follow the **YUCG Data Visualization studio** house style, not the website's serif. Every graph component in section 11.6 is built to these rules.
+
+- **Font:** Lato for every word in a chart or on a slide (`"Lato", "Helvetica Neue", Arial, sans-serif`). YaleNew stays on web pages and documents.
+- **Text color:** all chart text is `#00346B`: title, subtitle, legend, axis labels, axis titles, data labels and the source line. No gray text.
+- **Background:** white on screen, transparent when exported, so the chart sits on any slide or page. No logo on charts.
+- **Title** centered above the chart in Lato Bold, stating the takeaway ("Visits doubled after the October launch"). The subtitle names the measure, unit and base.
+- **Legend** centered under the title. Line charts use short line samples, solid or dotted like the series; bar charts use square swatches.
+- **Vertical axis title** rotated and centered on the axis, with the unit ("Visits (thousands)").
+- **Gridlines** horizontal only, thin (0.8px) and dashed, in `rgba(0, 52, 107, .6)`. Line charts have no axis line; bar charts keep a thin baseline.
+- **Lines** 2.8px with no point markers. A fitted, forecast, projected or estimated series is **dotted, in the same color as its actual series**.
+- **Series colors**, in order, never cycled (a ninth series folds into "Other"):
+
+  | Token | Hex | | Token | Hex |
+  |---|---|---|---|---|
+  | `chart-1` navy | `#1C366A` | | `chart-5` steel | `#909AB1` |
+  | `chart-2` mid blue | `#3465A8` | | `chart-6` pale blue | `#C4D4E8` |
+  | `chart-3` sky | `#7AA7D6` | | `chart-7` deep navy | `#0B1F3A` |
+  | `chart-4` slate | `#445469` | | `chart-8` mist blue | `#DFE6EF` |
+
+- **Highlight style** when one series carries the message: focus `#1C366A` for it, context `#C9CED6` for the rest.
+- **Heat maps and maps:** sequential `#F1F5FA` → `#C4D4E8` → `#7AA7D6` → `#1164A3` → `#1C366A` (low to high). Never a rainbow.
+- **Sentiment:** positive = `chart-1` navy, neutral = context gray, negative = `chart-3` sky. Always show the sign or a word as well; never rely on color alone.
+- **Data labels** off by default; label only the value the reader needs.
+- **One value axis per chart.** Two measures on different scales become two charts.
+- **Source line** bottom left in every data chart: "Source: …; YUCG analysis". Illustrative figures say "Example data".
+- **Type sizes** (px at 960 × 540): title 24, subtitle 14.7, legend 13.5, data label 12.5, axis 12, source 11.7.
+- **Slides:** 16:9, all text Lato in `#00346B` (white on navy title and section slides), title top left, source bottom left, logo bottom right.
 
 ---
 
 ## 11. Component Library
 
-Every component below works on its own once **11.0 Foundation** is on the page. Class names are prefixed `yucg-`. Modifiers use `--` (e.g. `yucg-btn--light`). Copy the CSS of the components you use, or paste the whole section into one stylesheet.
+Every component below works on its own once **11.0 Foundation** is on the page (graph components also need `yucg-chart-tokens`). Class names are prefixed `yucg-`. Modifiers use `--` (e.g. `yucg-btn--light`). Copy the CSS of the components you use, or paste the whole section into one stylesheet.
 
 ### Index
 
@@ -185,13 +209,15 @@ Every component below works on its own once **11.0 Foundation** is on the page. 
 | | `yucg-dropzone` | File upload area |
 | | `yucg-note` | Instructions / callout block |
 | | `yucg-form-group` | Titled group of fields ("Settings") |
-| Data | `yucg-kpis` | Row of headline numbers for dashboards |
-| | `yucg-table` | Data table with navy header rule |
-| | `yucg-bars` | Horizontal bar chart (HTML) |
+| Data | `yucg-chart-tokens` | Lato, chart text color, studio palette. Include with any chart |
+| | `yucg-kpis` | Row of headline numbers for dashboards |
+| | `yucg-chart-block` | Studio chart layout: centered title, legend, chart, source |
+| | `yucg-legend` | Centered legend: square swatches or line samples |
+| | `yucg-bars` | Horizontal bar chart with baseline (HTML) |
 | | `yucg-diverging` | Diverging bars for scores from −1 to +1 |
 | | `yucg-mix` | 100% stacked bar (e.g. positive / neutral / negative) |
-| | `yucg-line-chart` | SVG line chart spec + helper |
-| | `yucg-legend` | Square legend swatches |
+| | `yucg-line-chart` | SVG line chart, dotted fitted/forecast series |
+| | `yucg-table` | Data table with navy header rule |
 | | `yucg-chip` | Tags / keywords |
 | Disclosure | `yucg-accordion` | Expandable rows (FAQ, per-location detail) |
 | | `yucg-tabs` | Switch between views on one page |
@@ -800,9 +826,41 @@ Titled group of fields with a navy rule under the title.
 
 ### 11.6 Data
 
-Chart colors follow section 10: navy first, gray second, then navy tints. For sentiment, positive = navy, neutral = gray, negative = 20% navy.
+Graph components (`yucg-chart-tokens`, `yucg-chart-block`, `yucg-legend`, `yucg-bars`, `yucg-diverging`, `yucg-mix`, `yucg-line-chart`) follow the Data Visualization studio rules in section 10: Lato, all text `#00346B`, centered title and legend, dashed gridlines, studio series colors. `yucg-kpis`, `yucg-table` and `yucg-chip` are page UI and stay in the website serif.
+
+#### `yucg-chart-tokens`
+
+Include once on any page with a chart. The Lato link replaces the one in 11.0 (it loads both families).
+
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+```
+
+```css
+:root {
+  --yucg-font-chart: "Lato", "Helvetica Neue", Arial, sans-serif;
+  --yucg-chart-text: #00346B;                   /* every word in a chart */
+  --yucg-chart-1: #1C366A;  --yucg-chart-2: #3465A8;  --yucg-chart-3: #7AA7D6;  --yucg-chart-4: #445469;
+  --yucg-chart-5: #909AB1;  --yucg-chart-6: #C4D4E8;  --yucg-chart-7: #0B1F3A;  --yucg-chart-8: #DFE6EF;
+  --yucg-chart-focus: #1C366A;
+  --yucg-chart-context: #C9CED6;
+  --yucg-chart-grid: rgba(0, 52, 107, .6);      /* dashed, 0.8px, horizontal only */
+  --yucg-chart-axis: rgba(0, 52, 107, .6);      /* bar baselines; line charts have none */
+  --yucg-seq-1: #F1F5FA;  --yucg-seq-2: #C4D4E8;  --yucg-seq-3: #7AA7D6;  --yucg-seq-4: #1164A3;  --yucg-seq-5: #1C366A;
+}
+/* Series swatch classes: set --c, which every graph component paints with */
+.is-c1 { --c: var(--yucg-chart-1); } .is-c2 { --c: var(--yucg-chart-2); } .is-c3 { --c: var(--yucg-chart-3); } .is-c4 { --c: var(--yucg-chart-4); }
+.is-c5 { --c: var(--yucg-chart-5); } .is-c6 { --c: var(--yucg-chart-6); } .is-c7 { --c: var(--yucg-chart-7); } .is-c8 { --c: var(--yucg-chart-8); }
+.is-focus { --c: var(--yucg-chart-focus); }
+.is-context, .is-secondary { --c: var(--yucg-chart-context); }
+.is-pos { --c: var(--yucg-chart-1); }         /* sentiment: positive */
+.is-neu { --c: var(--yucg-chart-context); }   /* neutral */
+.is-neg { --c: var(--yucg-chart-3); }         /* negative */
+```
 
 #### `yucg-kpis`
+
+Page UI, not a chart: stays in the website serif.
 
 ```html
 <div class="yucg-kpis">
@@ -823,43 +881,77 @@ Chart colors follow section 10: navy first, gray second, then navy tints. For se
 
 #### `yucg-chart-block` (wrapper for any chart)
 
+The studio layout: centered takeaway title, centered subtitle, centered legend, the chart, then the source line bottom left. Transparent background, no logo.
+
 ```html
 <figure class="yucg-chart-block">
-  <figcaption><strong>Mean sentiment over time</strong><span>Past year, 260 posts</span></figcaption>
+  <figcaption>
+    <strong>Visits doubled after the October launch</strong>
+    <span>Daily visits and analyses run, last 30 days</span>
+  </figcaption>
+  <div class="yucg-legend">…</div>
   <!-- yucg-bars / yucg-diverging / yucg-mix / yucg-line-chart -->
+  <p class="yucg-chart-source">Source: YUCG Analytics logs; YUCG analysis</p>
 </figure>
 ```
 
 ```css
-.yucg-chart-block { margin: 0; display: flex; flex-direction: column; gap: 14px; }
-.yucg-chart-block figcaption { display: flex; flex-direction: column; gap: 2px; }
-.yucg-chart-block figcaption strong { font: 700 20px/1.4 var(--yucg-font-display); color: var(--yucg-navy); }
-.yucg-chart-block figcaption span { font-size: 14px; color: var(--yucg-muted); }
+.yucg-chart-block { margin: 0; display: flex; flex-direction: column; gap: 14px; background: transparent;
+  font-family: var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-chart-block figcaption { display: flex; flex-direction: column; gap: 4px; text-align: center; }
+.yucg-chart-block figcaption strong { font: 700 clamp(18px, 2.2vw, 24px)/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); text-wrap: balance; }
+.yucg-chart-block figcaption span { font: 400 14.7px/1.4 var(--yucg-font-chart); }
+.yucg-chart-source { margin: 0; font: 400 11.7px/1.4 var(--yucg-font-chart); color: var(--yucg-chart-text); text-align: left; }
 ```
 
-#### `yucg-bars`
+#### `yucg-legend`
 
-Horizontal bars in plain HTML. Set each bar's width as a percentage of the largest value.
+Centered under the title. Square swatches for bars; add `is-line` for a line sample, plus `is-dotted` for a fitted or forecast series. Color comes from a swatch class (`is-c1`…`is-c8`, `is-pos`…) or an inline `--c`.
 
 ```html
-<div class="yucg-bars">
-  <div><span>Reddit Analyzer</span><i style="width:100%"></i><b>96</b></div>
-  <div><span>Sentiment Analyzer</span><i style="width:64%"></i><b>61</b></div>
-  <div><span>Google Reviews</span><i style="width:57%" class="is-secondary"></i><b>55</b></div>
+<div class="yucg-legend">
+  <span><i class="is-line is-c1"></i>Actual</span>
+  <span><i class="is-line is-dotted is-c1"></i>Fitted</span>
+  <span><i class="is-c3"></i>Bar series</span>
 </div>
 ```
 
 ```css
-.yucg-bars { display: flex; flex-direction: column; gap: 10px; }
-.yucg-bars > div { display: grid; grid-template-columns: minmax(90px, 170px) minmax(0, 1fr) 56px; gap: 14px; align-items: center; font-size: 15px; }
-.yucg-bars i { display: block; height: 18px; background: var(--yucg-navy); }
-.yucg-bars i.is-secondary { background: var(--yucg-gray); }
-.yucg-bars b { text-align: right; color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+.yucg-legend { display: flex; justify-content: center; gap: 8px 22px; flex-wrap: wrap;
+  font: 400 13.5px/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.yucg-legend i { width: 12px; height: 12px; display: inline-block; background: var(--c, var(--yucg-chart-1)); }
+.yucg-legend i.is-line { width: 28px; height: 0; background: none; border-top: 2.8px solid var(--c, var(--yucg-chart-1)); }
+.yucg-legend i.is-dotted { border-top-style: dotted; }
+```
+
+#### `yucg-bars`
+
+Horizontal bars in HTML with a thin baseline. Width is a percentage of the largest value. Bars default to navy; use `is-c2`…`is-c8` for categories, or `is-focus` / `is-context` to highlight one bar. The value `<b>` is a data label: keep it only where the reader needs the number.
+
+```html
+<div class="yucg-bars">
+  <div><span>Reddit Analyzer</span><i class="is-focus" style="width:100%"></i><b>96</b></div>
+  <div><span>Sentiment Analyzer</span><i class="is-context" style="width:64%"></i><b>61</b></div>
+  <div><span>Google Reviews</span><i class="is-context" style="width:57%"></i><b>55</b></div>
+</div>
+```
+
+```css
+.yucg-bars { --label-w: 150px; position: relative; display: flex; flex-direction: column; gap: 8px;
+  font: 400 12.5px/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-bars::before { content: ""; position: absolute; top: -4px; bottom: -4px; left: calc(var(--label-w) + 12px);
+  border-left: 1px solid var(--yucg-chart-axis); }                         /* thin baseline */
+.yucg-bars > div { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr) 48px; gap: 12px; align-items: center; }
+.yucg-bars span { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yucg-bars i { display: block; height: 20px; background: var(--c, var(--yucg-chart-1)); }
+.yucg-bars b { font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .yucg-bars { --label-w: 96px; } }
 ```
 
 #### `yucg-diverging`
 
-For scores from −1 to +1. Positive bars grow right in navy; negative grow left in gray. `left` and `width` are percentages of the track (center = 50%).
+Scores from −1 to +1. Positive grows right in navy, negative grows left in sky (`is-neg`). The signed value always shows, so color is never the only cue. `left` and `width` are percentages of the track (center = 50%).
 
 ```html
 <div class="yucg-diverging">
@@ -869,74 +961,105 @@ For scores from −1 to +1. Positive bars grow right in navy; negative grow left
 ```
 
 ```css
-.yucg-diverging { display: flex; flex-direction: column; gap: 10px; }
-.yucg-diverging > div { display: grid; grid-template-columns: minmax(90px, 160px) minmax(0, 1fr) 52px; gap: 14px; align-items: center; font-size: 15px; }
-.yucg-diverging p { position: relative; height: 18px; margin: 0;
-  background: linear-gradient(var(--yucg-rule), var(--yucg-rule)) center / 1px 100% no-repeat; }
-.yucg-diverging i { position: absolute; top: 2px; bottom: 2px; background: var(--yucg-navy); }
-.yucg-diverging i.is-neg { background: var(--yucg-gray); }
-.yucg-diverging b { text-align: right; color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+.yucg-diverging { --label-w: 150px; display: flex; flex-direction: column; gap: 8px;
+  font: 400 12.5px/1.3 var(--yucg-font-chart); color: var(--yucg-chart-text); }
+.yucg-diverging > div { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr) 48px; gap: 12px; align-items: center; }
+.yucg-diverging span { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yucg-diverging p { position: relative; height: 20px; margin: 0;
+  background: linear-gradient(var(--yucg-chart-axis), var(--yucg-chart-axis)) center / 1px 100% no-repeat; }  /* zero line */
+.yucg-diverging i { position: absolute; top: 0; bottom: 0; background: var(--c, var(--yucg-chart-1)); }
+.yucg-diverging b { font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .yucg-diverging { --label-w: 96px; } }
 ```
 
 ```js
-// value in [-1, 1] → inline style for the <i>
+// value in [-1, 1] → inline style for the <i>; add class="is-neg" when v < 0
 const divStyle = v => `left:${v >= 0 ? 50 : 50 + v * 50}%;width:${Math.abs(v) * 50}%`;
 ```
 
-#### `yucg-mix` + `yucg-legend`
+#### `yucg-mix`
 
-100% stacked bar, labels inside segments wider than 8%.
+100% stacked bar for shares. Sentiment uses `is-pos` (navy), `is-neu` (context gray), `is-neg` (sky); other shares use `is-c1`…`is-c8` in order. Percent labels sit inside segments wider than 8%.
 
 ```html
+<div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
 <div class="yucg-mix" role="img" aria-label="Positive 58%, neutral 27%, negative 15%">
   <i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i>
 </div>
-<div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
 ```
 
 ```css
 .yucg-mix { display: flex; height: 36px; }
-.yucg-mix i { display: flex; align-items: center; justify-content: center; font: 400 13px/1 var(--yucg-font-body);
-  font-style: normal; color: var(--yucg-white); overflow: hidden; font-variant-numeric: tabular-nums; }
-.is-pos { background: var(--yucg-navy); }
-.is-neu { background: var(--yucg-gray); }
-.is-neg { background: var(--yucg-navy-20); }
-.yucg-mix i.is-neg { color: var(--yucg-navy); }
-.yucg-legend { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; }
-.yucg-legend span { display: inline-flex; align-items: center; gap: 8px; }
-.yucg-legend i { width: 12px; height: 12px; display: inline-block; }   /* square swatches */
+.yucg-mix i { display: flex; align-items: center; justify-content: center; overflow: hidden;
+  font: 700 12.5px/1 var(--yucg-font-chart); font-style: normal; font-variant-numeric: tabular-nums;
+  background: var(--c, var(--yucg-chart-1)); color: var(--yucg-chart-text); }
+.yucg-mix i:is(.is-pos, .is-focus, .is-c1, .is-c2, .is-c4, .is-c7) { color: #FFFFFF; }   /* white on dark fills */
 ```
 
 #### `yucg-line-chart`
 
-SVG, 720 × 250 viewBox, dashed light gridlines (solid at zero), square endpoint marker, optional 8% navy area fill. Text in the brand serif, ink.
+SVG line chart from `yucgLineChart()`. Lato, all text `#00346B`, horizontal dashed gridlines, no axis line, 2.8px lines with no markers, optional rotated y-axis title. Colors come from `chart-1`…`chart-8` in order. A series whose name contains *fitted*, *forecast*, *projected* or *estimated* is drawn dotted in the color of the series before it. Pair it with `yucgLegend()` inside a `yucg-chart-block`.
 
 ```css
-.yucg-line-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
-.yucg-line-chart text { font-family: var(--yucg-font-body); font-size: 12px; fill: var(--yucg-ink); }
+.yucg-line-chart svg { width: 100%; height: auto; display: block; overflow: visible; background: transparent; }
+.yucg-line-chart text { font-family: var(--yucg-font-chart); font-size: 12px; fill: var(--yucg-chart-text); }
+.yucg-line-chart .y-title { font-size: 12.5px; font-weight: 700; }
 ```
 
 ```js
-// yucgLineChart({ labels: [...], series: [{ values: [...], color: '#1C366A', area: true }], min: 0, max })
-function yucgLineChart({ labels, series, min = 0, max, fmtY = v => v.toLocaleString('en-US') }) {
-  const W = 720, H = 250, m = { t: 14, r: 18, b: 30, l: 46 };
+const YUCG_CHART = ['#1C366A', '#3465A8', '#7AA7D6', '#445469', '#909AB1', '#C4D4E8', '#0B1F3A', '#DFE6EF'];
+const yucgIsDotted = name => /fitted|forecast|projected|estimated/i.test(name || '');
+// Studio color order; a dotted series reuses the color of the series before it. Never cycles past chart-8.
+function yucgSeriesColors(series) {
+  let k = 0, last;
+  return series.map(s => {
+    if (s.color) return (last = s.color);
+    if (yucgIsDotted(s.name) && last) return last;
+    return (last = YUCG_CHART[Math.min(k++, 7)]);
+  });
+}
+// yucgLegend(series, 'line' | 'bar') → centered legend markup
+function yucgLegend(series, kind = 'line') {
+  const c = yucgSeriesColors(series);
+  return `<div class="yucg-legend">${series.map((s, i) =>
+    `<span><i class="${kind === 'line' ? 'is-line' + (yucgIsDotted(s.name) ? ' is-dotted' : '') : ''}" style="--c:${c[i]}"></i>${s.name}</span>`).join('')}</div>`;
+}
+// yucgLineChart({ labels: [...], series: [{ name, values, color? }], min, max, yTitle, fmtY })
+function yucgLineChart({ labels, series, min = 0, max, yTitle = '', fmtY = v => v.toLocaleString('en-US') }) {
+  const W = 720, H = 280, m = { t: 12, r: 16, b: 34, l: yTitle ? 72 : 48 };
   const hi = max ?? (v => { const p = 10 ** Math.floor(Math.log10(v || 1)); return Math.ceil(v / p) * p; })(Math.max(...series.flatMap(s => s.values)));
   const x = i => m.l + (W - m.l - m.r) * i / Math.max(labels.length - 1, 1);
   const y = v => H - m.b - (H - m.t - m.b) * (v - min) / (hi - min);
+  const colors = yucgSeriesColors(series);
   let g = '';
-  for (let k = 0; k <= 4; k++) { const v = min + (hi - min) * k / 4;
-    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#E2E2E1" stroke-dasharray="${v === 0 ? 0 : '3 4'}"/>`
-       + `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${fmtY(v)}</text>`; }
+  for (let k = 0; k <= 4; k++) {
+    const v = min + (hi - min) * k / 4;
+    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(0,52,107,.6)" stroke-width=".8" stroke-dasharray="4 4"/>`
+       + `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${fmtY(v)}</text>`;
+  }
+  if (yTitle) g += `<text class="y-title" transform="rotate(-90)" x="${-(m.t + (H - m.t - m.b) / 2)}" y="16" text-anchor="middle">${yTitle}</text>`;
   const step = Math.ceil(labels.length / 8);
-  labels.forEach((l, i) => { if (i % step === 0 || i === labels.length - 1) g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${l}</text>`; });
-  series.forEach(s => {
-    const d = s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join('');
-    if (s.area) g += `<path d="${d}L${x(s.values.length - 1)},${y(Math.max(min, 0))}L${x(0)},${y(Math.max(min, 0))}Z" fill="rgba(28,54,106,.08)"/>`;
-    g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.25"${s.dash ? ' stroke-dasharray="5 5"' : ''}/>`;
-    const li = s.values.length - 1; g += `<rect x="${x(li) - 4}" y="${y(s.values[li]) - 4}" width="8" height="8" fill="${s.color}"/>`;
+  labels.forEach((l, i) => { if (i % step === 0 || i === labels.length - 1) g += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${l}</text>`; });
+  series.forEach((s, n) => {
+    const d = s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+    const dots = yucgIsDotted(s.name) ? ' stroke-dasharray="0.1 6" stroke-linecap="round"' : '';
+    g += `<path d="${d}" fill="none" stroke="${colors[n]}" stroke-width="2.8" stroke-linejoin="round"${dots}/>`;
   });
-  return `<div class="yucg-line-chart"><svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg></div>`;
+  return `<div class="yucg-line-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${series.map(s => s.name).join(', ')}">${g}</svg></div>`;
 }
+```
+
+Full example:
+
+```js
+const series = [{ name: 'Actual', values: actual }, { name: 'Fitted', values: fitted }];
+document.querySelector('#chart').innerHTML = `
+  <figure class="yucg-chart-block">
+    <figcaption><strong>Arrivals track the model closely</strong><span>Monthly arrivals, millions</span></figcaption>
+    ${yucgLegend(series)}
+    ${yucgLineChart({ labels: months, series, yTitle: 'Arrivals (Millions)' })}
+    <p class="yucg-chart-source">Source: Turkish Ministry of Culture and Tourism; YUCG analysis</p>
+  </figure>`;
 ```
 
 #### `yucg-table`
