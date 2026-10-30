@@ -1,0 +1,936 @@
+<title>YUCG Component Library</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* ===== Library CSS: extracted verbatim from design.md section 11 at build time ===== */
+:root {
+  --yucg-navy: #1C366A;
+  --yucg-navy-overlay: rgba(28, 54, 106, .72);
+  --yucg-navy-45: rgba(28, 54, 106, .45);
+  --yucg-navy-20: rgba(28, 54, 106, .20);
+  --yucg-navy-06: rgba(28, 54, 106, .06);   /* faint fill for notes and drop zones */
+  --yucg-white: #FFFFFF;
+  --yucg-ink: #2F2E2E;
+  --yucg-muted: #6E6D6C;                    /* hints, captions */
+  --yucg-gray: #A0A09F;
+  --yucg-rule: #E2E2E1;                     /* hairline dividers */
+
+  --yucg-font-display: "YaleNew", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --yucg-font-body: "YaleNew", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --yucg-lh: 1.4;
+  --yucg-size-hero: clamp(38px, 6.4vw, 56px);
+  --yucg-size-h2: clamp(34px, 5.4vw, 50px);
+  --yucg-size-section: clamp(32px, 5vw, 46px);
+  --yucg-size-band: clamp(28px, 4.2vw, 38px);
+  --yucg-size-lead: clamp(18px, 2.2vw, 22px);
+  --yucg-size-ui: 16px;
+
+  --yucg-radius: 0;
+  --yucg-border: 1px solid currentColor;
+  --yucg-section-pad: clamp(56px, 9vw, 104px);
+  --yucg-gutter: clamp(16px, 4vw, 40px);
+  --yucg-max: 1180px;
+}
+*, *::before, *::after { box-sizing: border-box; border-radius: 0; }
+body { margin: 0; background: var(--yucg-white); color: var(--yucg-ink);
+  font: 400 var(--yucg-size-ui)/var(--yucg-lh) var(--yucg-font-body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4 { font-family: var(--yucg-font-display); font-weight: 700; color: var(--yucg-navy);
+  line-height: var(--yucg-lh); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+img { max-width: 100%; display: block; }
+:focus-visible { outline: 2px solid var(--yucg-navy); outline-offset: 3px; }
+.yucg-lead { font-size: var(--yucg-size-lead); max-width: 36em; }
+
+/* yucg-container */
+.yucg-container { max-width: var(--yucg-max); margin: 0 auto;
+  padding-left: max(var(--yucg-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--yucg-gutter), env(safe-area-inset-right, 0px)); }
+
+/* yucg-band: full-width section. Modifiers: --navy, --photo, --tight, --flush-top */
+.yucg-band { padding-block: var(--yucg-section-pad); background: var(--yucg-white); }
+.yucg-band--navy { background: var(--yucg-navy); color: var(--yucg-white); }
+.yucg-band--navy :is(h1, h2, h3, .yucg-lead) { color: var(--yucg-white); }
+.yucg-band--navy :focus-visible { outline-color: var(--yucg-white); }
+.yucg-band--tight { padding-block: clamp(48px, 7vw, 80px); }
+.yucg-band--flush-top { padding-top: 0; }
+
+.yucg-header { background: var(--yucg-white); border-bottom: 1px solid var(--yucg-rule); }
+.yucg-header__inner { display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap; padding-block: 14px; }
+.yucg-header__brand { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+.yucg-header__brand img { height: 52px; width: auto; }              /* site uses ~86px */
+.yucg-header__brand span { font: 700 22px/1.1 var(--yucg-font-display); color: var(--yucg-navy);
+  padding-left: 16px; border-left: 1px solid var(--yucg-gray); }
+
+.yucg-nav { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 32px); }
+.yucg-nav a, .yucg-nav summary { font: 700 var(--yucg-size-ui)/1 var(--yucg-font-body);
+  color: var(--yucg-navy); text-decoration: none; white-space: nowrap; padding-block: 6px;
+  opacity: .62; transition: opacity .15s; cursor: pointer; list-style: none; }
+.yucg-nav a:hover, .yucg-nav a[aria-current="page"], .yucg-nav summary:hover { opacity: 1; }
+.yucg-nav__more { position: relative; }
+.yucg-nav__more summary::-webkit-details-marker { display: none; }
+.yucg-nav__more > div { position: absolute; right: 0; top: 100%; background: var(--yucg-white);
+  border: 1px solid var(--yucg-navy); padding: 8px 18px; display: flex; flex-direction: column; z-index: 5; }
+.yucg-nav__more > div a { padding-block: 8px; }
+@media (max-width: 560px) {
+  .yucg-header__inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .yucg-nav { overflow-x: auto; max-width: 100%; }
+}
+
+.yucg-footer { padding-block: 56px; border-top: 1px solid var(--yucg-rule); }
+.yucg-footer__inner { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
+.yucg-footer img { height: 56px; width: auto; margin-bottom: 14px; }
+.yucg-footer p { font-size: 15px; }
+.yucg-social { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
+.yucg-social svg { width: 24px; height: 24px; fill: var(--yucg-navy); display: block; }  /* monochrome */
+.yucg-social a:hover svg { opacity: .7; }
+
+.yucg-hero { position: relative; color: var(--yucg-white); background: var(--yucg-navy) var(--yucg-hero-img, none) center/cover;
+  min-height: clamp(520px, 80vh, 820px); display: flex; align-items: center; padding-block: var(--yucg-section-pad); }
+.yucg-hero::before { content: ""; position: absolute; inset: 0; background: var(--yucg-navy-overlay); }
+.yucg-hero > * { position: relative; width: 100%; }
+.yucg-hero h1 { color: var(--yucg-white); font-size: var(--yucg-size-hero); line-height: 1; letter-spacing: .02em; }
+.yucg-hero .yucg-lead { color: var(--yucg-white); margin-top: 24px; }
+.yucg-hero .yucg-btn-group { margin-top: 40px; }
+
+.yucg-page-hero { background: var(--yucg-navy); color: var(--yucg-white); padding-block: clamp(48px, 7vw, 80px); }
+.yucg-page-hero h1 { color: var(--yucg-white); font-size: var(--yucg-size-hero); line-height: 1; letter-spacing: .02em; }
+.yucg-page-hero__kicker { opacity: .78; margin-bottom: 18px; }
+.yucg-page-hero .yucg-lead { color: var(--yucg-white); margin-top: 20px; }
+
+.yucg-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.yucg-split--center { align-items: center; }
+.yucg-split > h2 { font-size: var(--yucg-size-h2); }
+.yucg-split__body { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+@media (max-width: 900px) { .yucg-split { grid-template-columns: minmax(0, 1fr); } }
+
+.yucg-feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.yucg-feature--reverse > img { order: 2; }
+.yucg-feature > img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.yucg-feature__body { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; min-width: 0; }
+.yucg-feature__body h2 { font-size: var(--yucg-size-h2); }
+@media (max-width: 900px) { .yucg-feature { grid-template-columns: minmax(0, 1fr); } .yucg-feature--reverse > img { order: 0; } }
+
+.yucg-section-title { font-size: var(--yucg-size-section); text-align: center; margin-bottom: clamp(36px, 5vw, 64px); }
+
+.yucg-band-title { font-size: var(--yucg-size-band); color: var(--yucg-white); }
+
+.yucg-columns { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
+.yucg-columns > * { padding: 8px clamp(20px, 3vw, 40px); display: flex; flex-direction: column; gap: 16px; }
+.yucg-columns > * + * { border-left: 1px solid var(--yucg-rule); }
+.yucg-columns h3 { font-size: 28px; }
+.yucg-columns p { flex: 1; }
+.yucg-columns .yucg-btn { align-self: flex-start; margin-top: 8px; }
+@media (max-width: 900px) {
+  .yucg-columns { grid-template-columns: minmax(0, 1fr); }
+  .yucg-columns > * { padding: 28px 0; }
+  .yucg-columns > * + * { border-left: 0; border-top: 1px solid var(--yucg-rule); }
+}
+
+.yucg-logo-wall { list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(160px, 40%), 1fr)); gap: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 64px);
+  align-items: center; justify-items: center; }
+.yucg-logo-wall img { max-height: var(--logo-h, 80px); max-width: 100%; width: auto; object-fit: contain; }
+
+.yucg-logo-row { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center; gap: clamp(32px, 6vw, 96px); }
+.yucg-logo-row img { max-height: var(--logo-h, 64px); width: auto; }
+
+.yucg-press { list-style: none; margin: 32px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 32px; }
+.yucg-press a { display: flex; flex-direction: column; gap: 10px; color: var(--yucg-white); text-decoration: none; width: 129px; }
+.yucg-press img { width: 129px; height: 129px; object-fit: cover; background: var(--yucg-white); }
+.yucg-press a:hover img { opacity: .85; }
+
+.yucg-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.yucg-stat-row > div { padding: 4px 24px; display: flex; flex-direction: column; }
+.yucg-stat-row > div + div { border-left: 1px solid var(--yucg-rule); }
+.yucg-stat-row strong { font: 700 clamp(40px, 5vw, 56px)/1.1 var(--yucg-font-display); color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+.yucg-stat-row span { color: var(--yucg-muted); }
+.yucg-band--navy .yucg-stat-row strong, .yucg-band--navy .yucg-stat-row span { color: var(--yucg-white); }
+
+.yucg-quote { margin: 0; padding-left: 24px; border-left: 1px solid var(--yucg-navy); max-width: 40em; }
+.yucg-quote blockquote { margin: 0; font: italic 400 var(--yucg-size-lead)/var(--yucg-lh) var(--yucg-font-body); }
+.yucg-quote figcaption { margin-top: 12px; color: var(--yucg-muted); font-size: 15px; }
+
+.yucg-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: transparent; border: 1px solid var(--yucg-navy); color: var(--yucg-navy);
+  font: 400 var(--yucg-size-ui)/1 var(--yucg-font-body); padding: 13px 32px;
+  cursor: pointer; text-decoration: none; white-space: nowrap; transition: background .15s, color .15s; }
+.yucg-btn:hover { background: var(--yucg-navy); color: var(--yucg-white); }
+.yucg-btn[disabled] { opacity: .45; cursor: not-allowed; background: transparent; color: var(--yucg-navy); }
+.yucg-btn--light { border-color: var(--yucg-white); color: var(--yucg-white); }
+.yucg-btn--light:hover { background: var(--yucg-white); color: var(--yucg-navy); }
+.yucg-btn--block { width: 100%; }
+.yucg-btn-group { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.yucg-segmented { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.yucg-segmented button { font: 400 var(--yucg-size-ui)/1 var(--yucg-font-body); padding: 12px;
+  border: 1px solid var(--yucg-navy); background: transparent; color: var(--yucg-navy); cursor: pointer; }
+.yucg-segmented button + button { border-left: 0; }
+.yucg-segmented button[aria-pressed="true"] { background: var(--yucg-navy); color: var(--yucg-white); }
+
+.yucg-link { color: var(--yucg-navy); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.yucg-link:hover { text-decoration-thickness: 2px; }
+
+.yucg-field { display: flex; flex-direction: column; gap: 6px; }
+.yucg-field > label { font-weight: 700; color: var(--yucg-navy); font-size: 15px; }
+.yucg-field__hint { font-size: 14px; color: var(--yucg-muted); }
+.yucg-field__error { font-size: 14px; color: var(--yucg-ink); }
+.yucg-field__control { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--yucg-gray); transition: border-color .15s; }
+.yucg-field__control:focus-within { border-color: var(--yucg-navy); box-shadow: 0 1px 0 var(--yucg-navy); }
+.yucg-field__prefix { color: var(--yucg-navy); font-weight: 700; }
+.yucg-field__control :is(input, select, textarea) { font: 400 var(--yucg-size-ui)/1.4 var(--yucg-font-body);
+  color: var(--yucg-ink); background: transparent; border: 0; padding: 10px 0; width: 100%; min-width: 0; outline: none; }
+.yucg-field__control input::placeholder { color: var(--yucg-gray); }
+.yucg-field__control select { appearance: none; cursor: pointer; padding-right: 28px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--yucg-navy) 50%), linear-gradient(135deg, var(--yucg-navy) 50%, transparent 50%);
+  background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
+
+.yucg-range { display: flex; align-items: center; gap: 14px; }
+.yucg-range input { width: 100%; accent-color: var(--yucg-navy); }
+.yucg-range output { font-weight: 700; color: var(--yucg-navy); min-width: 2ch; text-align: right; font-variant-numeric: tabular-nums; }
+
+.yucg-check { display: flex; gap: 10px; align-items: baseline; padding: 6px 0; cursor: pointer; }
+.yucg-check input { accent-color: var(--yucg-navy); }
+
+.yucg-dropzone { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  padding: 40px 20px; background: var(--yucg-navy-06); outline: 1px dashed var(--yucg-gray); outline-offset: -1px;
+  cursor: pointer; transition: background .15s; }
+.yucg-dropzone:hover, .yucg-dropzone.is-over { background: var(--yucg-navy-20); }
+.yucg-dropzone strong { color: var(--yucg-navy); font-size: 18px; }
+.yucg-dropzone span { color: var(--yucg-muted); }
+
+.yucg-note { background: var(--yucg-navy-06); padding: 16px 18px; font-size: 15px; }
+.yucg-note strong { color: var(--yucg-navy); }
+
+.yucg-form-group { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+.yucg-form-group > legend { width: 100%; padding: 0 0 8px; margin-bottom: 18px; border-bottom: 1px solid var(--yucg-navy);
+  font: 700 20px/1.4 var(--yucg-font-display); color: var(--yucg-navy); }
+
+.yucg-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); row-gap: 20px; }
+.yucg-kpis > div { padding: 4px 20px; display: flex; flex-direction: column; }
+.yucg-kpis > div:first-child { padding-left: 0; }
+.yucg-kpis > div + div { border-left: 1px solid var(--yucg-rule); }
+.yucg-kpis strong { font: 700 clamp(28px, 3.4vw, 38px)/1.2 var(--yucg-font-display); color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+.yucg-kpis span { font-size: 14px; color: var(--yucg-muted); }
+
+.yucg-chart-block { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.yucg-chart-block figcaption { display: flex; flex-direction: column; gap: 2px; }
+.yucg-chart-block figcaption strong { font: 700 20px/1.4 var(--yucg-font-display); color: var(--yucg-navy); }
+.yucg-chart-block figcaption span { font-size: 14px; color: var(--yucg-muted); }
+
+.yucg-bars { display: flex; flex-direction: column; gap: 10px; }
+.yucg-bars > div { display: grid; grid-template-columns: minmax(90px, 170px) minmax(0, 1fr) 56px; gap: 14px; align-items: center; font-size: 15px; }
+.yucg-bars i { display: block; height: 18px; background: var(--yucg-navy); }
+.yucg-bars i.is-secondary { background: var(--yucg-gray); }
+.yucg-bars b { text-align: right; color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+
+.yucg-diverging { display: flex; flex-direction: column; gap: 10px; }
+.yucg-diverging > div { display: grid; grid-template-columns: minmax(90px, 160px) minmax(0, 1fr) 52px; gap: 14px; align-items: center; font-size: 15px; }
+.yucg-diverging p { position: relative; height: 18px; margin: 0;
+  background: linear-gradient(var(--yucg-rule), var(--yucg-rule)) center / 1px 100% no-repeat; }
+.yucg-diverging i { position: absolute; top: 2px; bottom: 2px; background: var(--yucg-navy); }
+.yucg-diverging i.is-neg { background: var(--yucg-gray); }
+.yucg-diverging b { text-align: right; color: var(--yucg-navy); font-variant-numeric: tabular-nums; }
+
+.yucg-mix { display: flex; height: 36px; }
+.yucg-mix i { display: flex; align-items: center; justify-content: center; font: 400 13px/1 var(--yucg-font-body);
+  font-style: normal; color: var(--yucg-white); overflow: hidden; font-variant-numeric: tabular-nums; }
+.is-pos { background: var(--yucg-navy); }
+.is-neu { background: var(--yucg-gray); }
+.is-neg { background: var(--yucg-navy-20); }
+.yucg-mix i.is-neg { color: var(--yucg-navy); }
+.yucg-legend { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; }
+.yucg-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.yucg-legend i { width: 12px; height: 12px; display: inline-block; }   /* square swatches */
+
+.yucg-line-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.yucg-line-chart text { font-family: var(--yucg-font-body); font-size: 12px; fill: var(--yucg-ink); }
+
+.yucg-table { overflow-x: auto; }
+.yucg-table table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.yucg-table th { text-align: left; font-weight: 700; color: var(--yucg-navy); padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--yucg-navy); white-space: nowrap; }
+.yucg-table td { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--yucg-rule); vertical-align: top; }
+.yucg-table .is-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.yucg-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.yucg-chip { font-size: 14px; padding: 6px 12px; border: 1px solid var(--yucg-navy); color: var(--yucg-navy); }
+.yucg-chip.is-neg { border-color: var(--yucg-gray); color: var(--yucg-ink); }
+
+.yucg-accordion details { border-bottom: 1px solid var(--yucg-rule); }
+.yucg-accordion details:first-child { border-top: 1px solid var(--yucg-rule); }
+.yucg-accordion summary { cursor: pointer; padding: 18px 0; list-style: none;
+  font: 700 20px/1.4 var(--yucg-font-display); color: var(--yucg-navy); }
+.yucg-accordion summary::-webkit-details-marker { display: none; }
+.yucg-accordion summary::before { content: "+ "; color: var(--yucg-gray); }
+.yucg-accordion details[open] summary::before { content: "– "; }
+.yucg-accordion details > div { padding-bottom: 22px; max-width: 40em; }
+
+.yucg-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--yucg-rule); overflow-x: auto; }
+.yucg-tabs button { background: none; border: 0; padding: 12px 0; margin-bottom: -1px; cursor: pointer;
+  font: 700 var(--yucg-size-ui)/1 var(--yucg-font-body); color: var(--yucg-navy); opacity: .62;
+  border-bottom: 1px solid transparent; white-space: nowrap; }
+.yucg-tabs button[aria-selected="true"] { opacity: 1; border-bottom-color: var(--yucg-navy); }
+
+.yucg-gate { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.yucg-gate h2 { font-size: 32px; }
+
+.yucg-workspace { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.yucg-workspace > * { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+@media (max-width: 900px) { .yucg-workspace { grid-template-columns: minmax(0, 1fr); } }
+
+
+/* ===== Gallery chrome (not part of the library) =====
+   Layout: sticky index on the left, one entry per component on the right; each entry = name, use, live demo, markup. Single light look by choice. */
+:root{ --g-code-bg:#F6F6F5; --g-code-ink:#2F2E2E; color-scheme:light; }
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.g-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:clamp(32px,4vw,64px);align-items:start;padding-block:56px}
+.g-index{position:sticky;top:max(24px,env(safe-area-inset-top,0px));max-height:calc(100vh - 48px);overflow:auto;font-size:15px;display:flex;flex-direction:column;gap:18px;padding-right:8px}
+.g-index h2{font-size:14px;color:var(--yucg-muted);font-weight:400;margin-bottom:6px}
+.g-index ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.g-index a{color:var(--yucg-navy);text-decoration:none;opacity:.7;display:block;padding:2px 0}
+.g-index a:hover,.g-index a.is-here{opacity:1;font-weight:700}
+.g-filter{border-bottom:1px solid var(--yucg-gray);display:flex}
+.g-filter:focus-within{border-color:var(--yucg-navy)}
+.g-filter input{font:400 15px/1.4 var(--yucg-font-body);border:0;background:transparent;padding:8px 0;width:100%;outline:none;color:var(--yucg-ink)}
+.g-main{display:flex;flex-direction:column;gap:88px;min-width:0}
+.g-group-title{font-size:var(--yucg-size-band);padding-bottom:10px;border-bottom:1px solid var(--yucg-navy);margin-bottom:-40px}
+.g-entry{display:flex;flex-direction:column;gap:16px;min-width:0}
+.g-entry-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px}
+.g-entry-head h3{font-size:26px}
+.g-name{font:400 14px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--yucg-navy);background:var(--yucg-navy-06);padding:3px 8px;border:0;cursor:pointer}
+.g-name:hover{background:var(--yucg-navy-20)}
+.g-use{max-width:44em}
+.g-demo{border:1px solid var(--yucg-rule);padding:clamp(20px,3vw,36px);min-width:0;position:relative}
+.g-demo--bleed{padding:0;overflow:hidden}
+.g-demo--bleed .yucg-hero{min-height:440px}
+.g-code summary{cursor:pointer;color:var(--yucg-navy);font-size:15px;list-style:none;display:inline-flex;gap:6px}
+.g-code summary::-webkit-details-marker{display:none}
+.g-code summary::before{content:"+";color:var(--yucg-gray)}
+.g-code[open] summary::before{content:"–"}
+.g-code pre{margin:12px 0 0;background:var(--g-code-bg);color:var(--g-code-ink);padding:18px;overflow-x:auto;font:400 13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;max-height:420px}
+.g-ph{background:var(--yucg-navy-06);display:flex;align-items:center;justify-content:center;color:var(--yucg-muted);font-style:italic;aspect-ratio:4/3;width:100%}
+.g-caption{font-size:14px;color:var(--yucg-muted);font-style:italic}
+.g-stack{display:flex;flex-direction:column;gap:28px}
+.g-row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.g-toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--yucg-navy);color:var(--yucg-white);padding:12px 22px;font-size:15px;z-index:20}
+.g-empty{color:var(--yucg-muted);font-size:var(--yucg-size-lead)}
+@media (max-width:900px){
+  .g-layout{grid-template-columns:minmax(0,1fr)}
+  .g-index{position:static;max-height:none;flex-direction:row;flex-wrap:wrap;gap:12px 24px}
+  .g-index nav{display:none}
+  .g-row2{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+
+<header class="yucg-header">
+  <div class="yucg-container yucg-header__inner">
+    <a class="yucg-header__brand" href="#top"><img src="data:image/png;base64,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" alt="YUCG"><span>Design System</span></a>
+    <nav class="yucg-nav" aria-label="Gallery">
+      <a href="#g-foundation" aria-current="page">Components</a>
+      <a href="#g-recipes">Recipes</a>
+    </nav>
+  </div>
+</header>
+
+<section class="yucg-page-hero" id="top">
+  <div class="yucg-container">
+    <p class="yucg-page-hero__kicker">design.md, section 11</p>
+    <h1>Component<br>Library</h1>
+    <p class="yucg-lead">Every YUCG component rendered live from the CSS in design.md. Click a name to copy it, then ask for components by name when you build a page.</p>
+  </div>
+</section>
+
+<div class="yucg-container g-layout">
+  <aside class="g-index">
+    <div class="g-filter"><input type="text" id="g-q" placeholder="Filter components" aria-label="Filter components" autocomplete="off"></div>
+    <nav id="g-nav" aria-label="Component index"></nav>
+  </aside>
+
+  <main class="g-main" id="g-main">
+
+  <!-- ================= Foundation ================= -->
+  <h2 class="g-group-title" data-group="Foundation" id="g-foundation">Foundation</h2>
+
+  <article class="g-entry" id="yucg-foundation" data-name="yucg-foundation" data-title="Foundation" data-use="Tokens, square-corner reset and the serif. Always include it.">
+    <div class="g-demo">
+      <div class="g-stack">
+        <div class="yucg-kpis">
+          <div><strong style="color:var(--yucg-navy)">■</strong><span>Navy #1C366A</span></div>
+          <div><strong style="color:var(--yucg-navy-overlay)">■</strong><span>Navy overlay 72%</span></div>
+          <div><strong style="color:var(--yucg-navy-20)">■</strong><span>Navy 20%</span></div>
+          <div><strong style="color:var(--yucg-ink)">■</strong><span>Ink #2F2E2E</span></div>
+          <div><strong style="color:var(--yucg-gray)">■</strong><span>Gray #A0A09F</span></div>
+        </div>
+        <div class="g-stack" style="gap:14px">
+          <h1 style="font-size:var(--yucg-size-hero);line-height:1;letter-spacing:.02em">Hero title 56</h1>
+          <h2 style="font-size:var(--yucg-size-h2)">Feature heading 50</h2>
+          <h2 style="font-size:var(--yucg-size-section)">Section title 46</h2>
+          <h2 style="font-size:var(--yucg-size-band)">Band title 38</h2>
+          <p class="yucg-lead">Lead paragraph 22. YUCG is a student-led consulting group working on high-impact, cross-industry business challenges.</p>
+          <p>Body and UI 16. Body copy is ink, never navy, so headings stay distinct.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-container" data-name="yucg-container" data-title="Container" data-use="Centers content at 1180px max with side gutters that clear phone safe areas.">
+    <div class="g-demo g-demo--bleed"><div style="background:var(--yucg-navy-06)"><div class="yucg-container" style="background:var(--yucg-white);padding-block:20px"><p>Content sits inside <code>.yucg-container</code>; the tinted edges are the gutter.</p></div></div></div>
+  </article>
+
+  <article class="g-entry" id="yucg-band" data-name="yucg-band" data-title="Band" data-use="Any full-width section. Modifiers: --navy, --tight, --flush-top.">
+    <div class="g-demo g-demo--bleed">
+      <section class="yucg-band yucg-band--tight"><div class="yucg-container"><p class="yucg-lead">White band, <code>.yucg-band--tight</code></p></div></section>
+      <section class="yucg-band yucg-band--navy yucg-band--tight"><div class="yucg-container"><p class="yucg-lead">Navy band, <code>.yucg-band--navy</code></p></div></section>
+    </div>
+  </article>
+
+  <!-- ================= Page frame ================= -->
+  <h2 class="g-group-title" data-group="Page frame">Page frame</h2>
+
+  <article class="g-entry" id="yucg-header" data-name="yucg-header" data-title="Header and nav" data-use="Logo left, bold navy text links right. Current page at full strength, others at 62%. Extra links collapse into More (yucg-nav).">
+    <div class="g-demo g-demo--bleed" style="overflow:visible">
+      <header class="yucg-header">
+        <div class="yucg-container yucg-header__inner">
+          <a class="yucg-header__brand" href="#yucg-header"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATwAAADCCAYAAADU6n7bAAARQ0lEQVR42u2dPY4qSxJGWUhZbOKZLKD3gP+2wALwkEYqb7wuDxOXBZRw2sUuqS08JNQG7TDUKHhTc8V/ZWRGZB3j071Pr29DZWWejIy/HBV//T1CCKEhiEFACAE8hBACeGiQ+te/V2OEPAjgod6wO/+5OKtEyLruQY8FjZ617k4IWVe7MQM8BPAQwAN46EngTVhMCOAhgIcQwEMADyGAhwAeQgAPATyEAB4CeAgBPATwEAJ4COAhgAfwEMBDAA8hgIcAHkIADwE8BPAQAngI4CEE8BDAQwjgocEC7xchEcBD+QJPJuXsrA+EzprLnAB4KEvgtW24PxhbJPNrKnMC4KH8Oh7L5J4ytgjgIYCHAB7AQwAPATyAhwAeAngADwE8BPAAHgJ4COAhBPAQwEMAD+AhgIcAHsBDAA8BPICHAB4CeAAPATwE8BDAA3gI4CGAB/AQwEMAD+AhgIcAHsBDAA8BPIQAHgJ4CAE8BPAQwAN4COAhgAfwEMBDAA/gIYCHAB4CeAAPATwE8AAeAngI4AE8BPAQwAN4COAhgAfwEMBDAA8hgIcAHgJ4AA8BPJQ58NqJJJMJ4CHLwCsBHgph4W0CqjlrwtgimV8TmROh5hfAQwghBgEhBPAQQgjgIYQQwEMIIYCHEEIADyGEAB5CCAE8hBACeAih96scZmd9dqpgWh1ElwqI5Vnzsz7uVTIAPIR8Lfx2YR+kdrgSlfLnQiCwkZ8dO3zOudSc1md9n7U/63jW6Un9yL/ZtmMioBy7BJ7UTM7lIUJr6mxizJTG4RXNDdXShnyuZapFIs/Swm0pINu9sNhvaSuW0NTS4pdnbS2y5vzfTYDnvKejbAaTd8dAxi/Y2rn2Pa59sNbAbD3BTnlyPC0LRfayWYV+rnnkhT+ThV8rv7PLcXCWEOotdD7Pf18lmrcr2dQmL37v0HPs4yHwZOfTWrxzJ8BrjABvB/B6fe8POZ6uEy78TSzwCdhjQP1Zfcn3efb7HwJ+9v7a2rn14VoDsHAAu3HCBQLwAoFOfG57I+/xuwWf8jv6FJ/cyaC+5NRkE3iKFk5zzcw0BrypoYkC8F4HXW100deK78bqM/+pu805UwJvonis3RgH3gng+QLepWOu5cWusdEbcr28GuCZWDvSjuT4qfHAa+NhbIDnBHjiszoYOrpGse5kTlQOYdc96U1NAU8mpNZuNy2IzgK8gRzlQs53+V1bx7Drzu2pJeCNFcPalVHrbgXw7APP2VGuCvge5hmA7uZRP/WRdiT+Nq2HtRidPQE8u8CTsVg5W9BzYHcfTJaAN9YKdVsLXijDHeD1BIGzaGQ3D28M7B5Hb00AT6QV/friOAvwXvCt7hwe15aB/MrHzIF3knKwJjnwNI96hmpFp0YX1OCBJwm1HhfxVxEmr3CXO+w6kezKgoU3Uqw8qIwAz6oTfNDA83yUCxCFHmcSjU3mG3wbeIrpGk3qFBXlaDTAexMIzv1WTYBxXwCtdBbeSGu3SR28MFZKBvBsuxhiWXdzgJUYeIpRzKSVF4EjQwCvJxTkeRvHC63uM5/l334BrPTA+1C08mYJF/QR4Jmy8GrPC02CLF434N0leNDp6vxPS3cp5Rt3GovOxf9dCaR3OR1pNQvrK46zAC9h8OiyyE+dOxw20sjzMj+32qcVGecUdcHVpWNz33ki73CVC/Bmii8kxWKuAJ4N4CWqYy7FSpk8c8KRnz3cOnL39Ucn6NRTaXRmvnSYThx46Q88zRSVRMGLE8BLD7zYTVfPn/fbZ1w7C3odKjIbubRxGys7QsZ57xZ4iomguwxKyY4A7y3gxTrKVoVOWlMVYMMuI8G+KYaR6xrMwhsVRh2+iUvJtgpWSvbAixSV3UaeWxZPG9+px0A+/+gOeIqRpCriAm4CL+CDwi49BOBpRyVrC2P4YHyXEYA/M/KsU4/A0/I3RLnzQuM4K8XP+PBeP9KazYlzfNro6scK7CIHqIIeadUiSto+BqVSslqpHChn4E2VrbuVB9hpp6JYg13EphDBgTfzuCsrLd5fJcdz7hbefqjH2AgVTMkCFEYCNcGBp1Z0r7krKR1nPwDeW/7aQd2ZEnnRfzmA/USxOiMs8JR3p1JxoEOXx20VJ2/OwNOC3cYL7OTd1kM6ykZMV1EBnmahs9aN9JoVAwAvrdaOLDtNt9DC0zi4AZ68tF+lHerg5PgwAnhmrLuZM+BpOO6PDsdh4wl4E0eVF1rBCoCX0XWIEcdVJTrtcBwmboCnXF87Dzio80LfOQ7wnLZlSqR1MbzIbKxGHnrA0/CNKezaoSPK1/K8AJ7DppuJxnSsUWYVI3HfSbWJqoWn1bhxFyLFQB78O/DEWkbwEQK8597FyeEC16hW2jq17jSuo9QFnlbmdAgTXcEpur2xkwI8h3dIZOS3Kh0DL3RHdXXgTQqdFvAh7ryoIk0sgJcGeGOnFs1gcxAjFDKoH2nVOl/0CbNr3IB1x6IAeGnuYcBn5a/CRHv9RAGe1vV6laHj7FfEPD+Al1mysXKJ49gz8AKn6egDT+n4eHmZkzfN5LqI51MEeAnupXC6uDVKqkbOgXdwBzxLwQuldJkRwDPlv/vFmgF4KS28ViZuNlMoe1sDPHPAOwA8gJcUeFotq9/Ipo/tFAZ4AO9ZLQBePhaeVgeE1QuDFzrsv33CKQzw4muBhZcN8E5ugaf0QvcvhN6rIr4PsVR4XoCXWbG81vrw0uU5m7SUGIvkGfCIJRaylOzZljtljpPYOPC2AM9neyz3iccxANDmwT2CgEKOU5XqeS0Ug0e6ZWpoR7mqIGLtt7QscorKZ+Tj7AbgmS4t81hhoFGGWTtvHnDyDrzgib+PLC6Fao/vFzLYyxwXc4SLoodYQ6rl4x47Bd7GPfCU62snkRZnmfIIb8Evo3jRymC7HSvCf8kRPy3w2h3nR+HFnm581rpIFzQoM53ApXHgNZ4aXyq7CGjxnhJ4mvW1EUrJmtRgMJJYuzIOPG/XM2qOhcdLfH6zAp7WRT9/Bi9CH5/fqOwoc9uxFfscBh8nR/6rL+Wx4JrGxBbeSKwl7dZASdvtKO3cx8TA+3QAOzd5aBKE2hdErv1dxP3ig801zffQybHv3JOgGKAZJ5yQBy/A85CWEXE8Gwdj8aEI/+TAG2scjTpgqlJbC1q7VSr/lKPjrIvrGmU864hjYb2xQqX4/MmPtFpAqGWnCPm73/IHKd2gnsxy8XSctWIRWxtPqxccRUh1MgE8rRbwMbsaxz62p6yp3SlOyEr5d1u0aOoEG4C5qK3mOjEFPCc5Xd/v5nRpFtnHvntV29ckk/5H8fc3xhb5JuGcPloJYkQsU7QBvEh0T2kdmAOxJXB3o4gRoLos7DjnB39/b+QSRTMWXow8pJSpDUfF77coMglUtOMsvrZTztAT2O0Mze8mto+z/TzlZGvbwEts3mu3GloXTqOQis0e7lkbVYTPShXlnhqNcq9j+fXkPacwcExZeCOj1t2h+Mt+npWGP0YmxzH28SpWc9EEPlDrrpv/um+0rD2xbNcJn80W8CwmtIZ4+REX8GfA48amSOtPihXIarQtm3aRJTi+hQDfrG8mgDz7Z6JotHngTYq8ghXRrdd20+gRUZ4I6OoisQM9doPRFkihwdcZz8YZ7P68qKqdU8v2/UhgaXxjk5zI/5/Lc5eWfJUWj7SmUlQCR7BimvLtAitl4o0fWZ/ixF+kDhxdGe8q9oIQy2YZwKJPPp5KNdxb2RDb+bzqaC3Paxnu9oBnyM/xFTKxN2FQ5kd22ctEvaiJUbDeB3iJLf69VNdsHlnMYt3MBdDfmUEuJ5kEXuibikzUHCoXRWehaxa1wVbyO9ksdrwzgJdLispeyZG9YNK95UJYMz4oZ+BNEh8N1gNOS3h1nNSBJ/OhYcGiLIGXOnihXHO5zsgim0ay8Nx2aUEAz0OKiuua1Eiw24QuA3sUFTdejRNTC+vXZAYMHA3GwkvVOidGGyHvvrz6kncVOw3IwfWQ2iovqUY5W72SF7kZFPBS3G4fo/uITNi948k417DCX8h7XAwddn8c9XOL/q+VLHrzwBtHdlZvqat8vv40IfBGDku1+o7N7wPDIJf8v3/yXxWsefNH2qh5WLHbBjn0Sa01/ayvVrYM5Xj7wrxcOX/W/7tGYajA+4hk5e1StEx3dANYrR1YeqeUL/Pobf1qPqjMp13h02c3Vt7Q7AMv4vGlTPh8jaed1xLwirT91bQjsZPi/UyAyslz7m/1Jhwy8OaFcl+21Ff5GT7e3rytzQrwOt+lygB0+xBzsVPfezT8rNW9IKES8MbmgRchYbe2cI2fwW64i5i5kiG603g+4mo1JJXN1FIkt3mmYa0C8L7dAE9zIlu7nFgm/k/CCfn9TAt0i8DrRPdLJ+ka+0eWTuAA4DqR1dfIc74SiQ/t3/6+9jmWbyX/UQLexCDgZ4nK6xbPLj6rwPtjDC3n7JUp7oeVTsaHSGWOlxZb0yK9794X8JSc+7VhwI9iXF3YWXzTNyyptfjO+mqldU9qpyGnlaPrwcKdsOLnuzSADdWduJFN8/NWd+QXFNonu/UGvInC5JtbBt4Vi6UKmHawlok59jIGARb4ZyI/6TqFNddjk13KRrso/tfR+NI49tLxuBR4h4Dbrc1UvQuS5ZehccTzvHhncly41ACvO6o7f1+J/+RyN8HHEAD3aPMUP+VKUlpCbSJ7Aepa456MAb2fceh8wltBIcsDkXWwAiXfPJZyKfVlA1nJxrG9orpznF/IZrIJcdMX+gd4wTv8uAGeRp6aBT8KMg3By01crT7+0OTyM4yXjzZqt6ztoeThrZisCP09JANn7AJ4Gp1FUldWIISiFxqMvABP43Jh/CwIDcRfL9Fl+8ATMIVOIyiZUAgNyn938gK8z2LAuXcIDVBlzDVv7eFD32uxZUIhZDodZV9ELB/N3bTdMLEQGlb56L2MDEsDoNHfjImFkN3S0bqIXGCQbaZ1EecKxqFN0pnUUfbVjLzIwc8llSYZj1LQcnZcUlkRflOqpMC8ryrez7A3zkKnaUP9KAXNimm7j3mOR+832pQi+V6S3/PBuA72KJvsrposTVuCFS6Ah4WH3y56RVXqAWh3+dDXzO1YTAAPmZs/H5qwu1ddYQJ4soA0LhMmWAHwUOb18VesO9vAK5TucHjh5nYE8JC+VRer3f7IJPDkHL9IadYigId0iwjEN78r4twb0oQEXimdYScBBmJTKN4xQFdjgIeSH11bl9J3Ee/+kP0rGRnP/FD3y+9kss6f+ZBLO21rZi0iLQX1nw+dKyDrIt2tcC/1unzmDP79xDGye4nM5bajLG5yRyrAW8ipYYOiqI81XXXWdXs6O6aCWxGgk/kzGdGWHtDVBdsA7z70UBT1vQDc6vr/eee5Hk3ypRPY4btzBjwUR2JN9wHezuiafytAmaJ9S2iRaAzw0LCAt373eR5Ncg/WHakoAA8NB3i9mvqm6FEX+oIemgQAPDQM4PW+kCtF6Zf6ZbsI4KHsgBfEdfWoImJrGHjcRgbw0ECAFyoLw2tKSg2EAB4aBPCCXsSVtMNBqnM8AngAzwXwqtA+em85eEdSUAAeyh94LX80ApKucvCovwR4KHvgqWZeeElJ2XGMBXgoa+A1rzYCCAY8mdxrI7CrgB3AQ9kCbyuNJKLk096b3DsD/rolicUAD2UJvFo6uUQ1ZlJcpfaMFlh1AA9lCbyVdEROYsjc64MXG3JNTNMWATyAFwV4e3FLzS3M42d602+kqmElCb8hiL+X39XS/pcSMTfAq+gvRz+8W4HFs76EE2WAxqPxgXftqCsQnIt/rX2oQ6ehY/mnZKf5Feut/Tef0hqaI6s/6G3kHSJf6pPOtbiynk+djtWfwgMXa5qFjBAajBgEhBDAQwghgIcQQk71H4d/2MWMND18AAAAAElFTkSuQmCC" alt="YUCG"></a>
+          <nav class="yucg-nav" aria-label="Example">
+            <a href="#yucg-header">Services</a>
+            <a href="#yucg-header" aria-current="page">About Us</a>
+            <a href="#yucg-header">Join Us</a>
+            <a href="#yucg-header">Contact</a>
+            <details class="yucg-nav__more"><summary>More</summary><div><a href="#yucg-header">Blog</a><a href="#yucg-header">FAQ</a></div></details>
+          </nav>
+        </div>
+      </header>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-footer" data-name="yucg-footer" data-title="Footer and social icons" data-use="Logo, location, email and 24px monochrome social icons (yucg-social).">
+    <div class="g-demo g-demo--bleed">
+      <footer class="yucg-footer">
+        <div class="yucg-container yucg-footer__inner">
+          <div>
+            <img src="data:image/png;base64,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" alt="YUCG">
+            <p>Yale Undergraduate Consulting Group<br>New Haven, CT</p>
+            <p><a class="yucg-link" href="#yucg-footer">EMAIL</a></p>
+          </div>
+          <ul class="yucg-social">
+            <li><a href="#yucg-footer" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM17.5 5.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg></a></li>
+            <li><a href="#yucg-footer" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v9h4v-9h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg></a></li>
+            <li><a href="#yucg-footer" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M3 3h4v4H3zM3 9h4v12H3zM9 9h3.8v1.7c.6-1 1.9-2 3.9-2 3.6 0 4.3 2.3 4.3 5.4V21h-4v-6.1c0-1.5 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V21H9z"/></svg></a></li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+  </article>
+
+  <!-- ================= Sections ================= -->
+  <h2 class="g-group-title" data-group="Sections">Sections</h2>
+
+  <article class="g-entry" id="yucg-hero" data-name="yucg-hero" data-title="Hero" data-use="Full-bleed member photo under a 72% navy tint, stacked white title, two light ghost buttons. Set --yucg-hero-img to a photo; without one it is solid navy, as shown.">
+    <div class="g-demo g-demo--bleed">
+      <section class="yucg-hero">
+        <div class="yucg-container">
+          <h1>Yale Undergraduate<br>Consulting Group</h1>
+          <p class="yucg-lead">High-impact, cross-industry business challenges, solved by the next generation of talent at Yale.</p>
+          <div class="yucg-btn-group">
+            <a class="yucg-btn yucg-btn--light" href="#yucg-hero">About Us</a>
+            <a class="yucg-btn yucg-btn--light" href="#yucg-hero">Join Us</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-page-hero" data-name="yucg-page-hero" data-title="Page hero" data-use="Compact navy band that opens an inner page or tool. Sentence-case kicker, never uppercase.">
+    <div class="g-demo g-demo--bleed">
+      <section class="yucg-page-hero">
+        <div class="yucg-container">
+          <p class="yucg-page-hero__kicker">Reddit tool</p>
+          <h1>Reddit Analyzer</h1>
+          <p class="yucg-lead">Analyze sentiment of Reddit discussions on any topic across subreddits.</p>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-split" data-name="yucg-split" data-title="Split" data-use="Two-line feature heading left, lead copy right. The &quot;Who Are We?&quot; pattern. Add yucg-split--center inside navy bands.">
+    <div class="g-demo">
+      <div class="yucg-split">
+        <h2>Who<br>Are We?</h2>
+        <div class="yucg-split__body">
+          <p class="yucg-lead">YUCG is a student-led consulting group that partners with companies, startups and nonprofits on high-impact, cross-industry business challenges.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-feature" data-name="yucg-feature" data-title="Feature" data-use="Photo on one side, heading, copy and a CTA on the other. The &quot;Explore YUCG&quot; pattern. Add yucg-feature--reverse to flip.">
+    <div class="g-demo">
+      <div class="yucg-feature">
+        <div class="g-ph">Member photo</div>
+        <div class="yucg-feature__body">
+          <h2>Explore<br>YUCG</h2>
+          <p class="yucg-lead">Beyond client work, members get to know each other on retreats, project dinners, formals and trips to New York.</p>
+          <a class="yucg-btn" href="#yucg-feature">Join Us</a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-section-title" data-name="yucg-section-title" data-title="Section title" data-use="Centered 46px title above a logo grid or columns.">
+    <div class="g-demo"><h2 class="yucg-section-title" style="margin-bottom:0">Our Recent Clients</h2></div>
+  </article>
+
+  <article class="g-entry" id="yucg-navy-band" data-name="yucg-navy-band" data-title="Navy band" data-use="Navy band with a 38px band title and copy. Pairs with yucg-split--center or yucg-press.">
+    <div class="g-demo g-demo--bleed">
+      <section class="yucg-band yucg-band--navy yucg-band--tight">
+        <div class="yucg-container yucg-split yucg-split--center">
+          <h2 class="yucg-band-title">In Development</h2>
+          <p class="yucg-lead">New tools are on the way, with more analytics and insights for project teams.</p>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-columns" data-name="yucg-columns" data-title="Columns" data-use="Two to four text columns separated by hairlines, no cards. Set --cols.">
+    <div class="g-demo">
+      <div class="yucg-columns" style="--cols:3">
+        <article><h3>Strategy</h3><p>Market entry, growth plans and competitive positioning.</p><a class="yucg-btn" href="#yucg-columns">Learn more</a></article>
+        <article><h3>Operations</h3><p>Process redesign, cost reviews and supply chain questions.</p><a class="yucg-btn" href="#yucg-columns">Learn more</a></article>
+        <article><h3>Social Impact</h3><p>Program evaluation and growth for nonprofits and public agencies.</p><a class="yucg-btn" href="#yucg-columns">Learn more</a></article>
+      </div>
+    </div>
+  </article>
+
+  <!-- ================= Proof ================= -->
+  <h2 class="g-group-title" data-group="Proof">Proof</h2>
+
+  <article class="g-entry" id="yucg-logo-wall" data-name="yucg-logo-wall" data-title="Logo wall" data-use="Native-color logos at one height in a centered grid. No borders, cards or shadows. Set --logo-h.">
+    <div class="g-demo">
+      <h2 class="yucg-section-title">After YUCG</h2>
+      <ul class="yucg-logo-wall" style="--logo-h:44px"><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20146%2048%22%3E%3Ctext%20x%3D%2273.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3EHalcyon%3C/text%3E%3C/svg%3E" alt="Halcyon (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20164%2048%22%3E%3Ctext%20x%3D%2282.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%23A0A09F%22%3EMeridian%3C/text%3E%3C/svg%3E" alt="Meridian (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20218%2048%22%3E%3Ctext%20x%3D%22109.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3EBellweather%3C/text%3E%3C/svg%3E" alt="Bellweather (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20290%2048%22%3E%3Ctext%20x%3D%22145.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3EArbor%20%26amp%3B%20Co.%3C/text%3E%3C/svg%3E" alt="Arbor &amp; Co. (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20146%2048%22%3E%3Ctext%20x%3D%2273.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%23A0A09F%22%3EKestrel%3C/text%3E%3C/svg%3E" alt="Kestrel (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20236%2048%22%3E%3Ctext%20x%3D%22118.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3ELumen%20Health%3C/text%3E%3C/svg%3E" alt="Lumen Health (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20200%2048%22%3E%3Ctext%20x%3D%22100.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3ENorthfield%3C/text%3E%3C/svg%3E" alt="Northfield (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20128%2048%22%3E%3Ctext%20x%3D%2264.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%23A0A09F%22%3EQuarry%3C/text%3E%3C/svg%3E" alt="Quarry (placeholder)"></li></ul>
+      <p class="g-caption" style="margin-top:24px">Placeholder wordmarks. Use the real client and employer logos.</p>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-logo-row" data-name="yucg-logo-row" data-title="Logo row" data-use="Single centered row of sponsor logos on white.">
+    <div class="g-demo"><ul class="yucg-logo-row" style="--logo-h:40px"><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20146%2048%22%3E%3Ctext%20x%3D%2273.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3EHalcyon%3C/text%3E%3C/svg%3E" alt="Halcyon (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20164%2048%22%3E%3Ctext%20x%3D%2282.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20font-style%3D%22italic%22%20fill%3D%22%23A0A09F%22%3EMeridian%3C/text%3E%3C/svg%3E" alt="Meridian (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20218%2048%22%3E%3Ctext%20x%3D%22109.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3EBellweather%3C/text%3E%3C/svg%3E" alt="Bellweather (placeholder)"></li><li><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20290%2048%22%3E%3Ctext%20x%3D%22145.0%22%20y%3D%2234%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20%20fill%3D%22%23A0A09F%22%3EArbor%20%26amp%3B%20Co.%3C/text%3E%3C/svg%3E" alt="Arbor &amp; Co. (placeholder)"></li></ul></div>
+  </article>
+
+  <article class="g-entry" id="yucg-press" data-name="yucg-press" data-title="Press thumbnails" data-use="129px square thumbnails on a navy band, each linking to the article.">
+    <div class="g-demo g-demo--bleed">
+      <section class="yucg-band yucg-band--navy yucg-band--tight">
+        <div class="yucg-container">
+          <h2 class="yucg-band-title">Featured In</h2>
+          <ul class="yucg-press"><li><a href="#yucg-press"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20129%20129%22%3E%3Crect%20width%3D%22129%22%20height%3D%22129%22%20fill%3D%22%23fff%22/%3E%3Ctext%20x%3D%2264.5%22%20y%3D%2276%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%231C366A%22%3EBI%3C/text%3E%3C/svg%3E" alt=""><span>Business Insider</span></a></li><li><a href="#yucg-press"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20129%20129%22%3E%3Crect%20width%3D%22129%22%20height%3D%22129%22%20fill%3D%22%23fff%22/%3E%3Ctext%20x%3D%2264.5%22%20y%3D%2276%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%231C366A%22%3EE%3C/text%3E%3C/svg%3E" alt=""><span>The Economist</span></a></li><li><a href="#yucg-press"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20129%20129%22%3E%3Crect%20width%3D%22129%22%20height%3D%22129%22%20fill%3D%22%23fff%22/%3E%3Ctext%20x%3D%2264.5%22%20y%3D%2276%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%231C366A%22%3EYDN%3C/text%3E%3C/svg%3E" alt=""><span>Yale Daily News</span></a></li></ul>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-stat-row" data-name="yucg-stat-row" data-title="Stat row" data-use="Large proof numbers where logos can't carry the claim. Turns white inside navy bands.">
+    <div class="g-demo">
+      <div class="yucg-stat-row">
+        <div><strong>120+</strong><span>Client projects</span></div>
+        <div><strong>15</strong><span>Years at Yale</span></div>
+        <div><strong>60</strong><span>Members</span></div>
+      </div>
+      <p class="g-caption" style="margin-top:20px">Placeholder numbers.</p>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-quote" data-name="yucg-quote" data-title="Quote" data-use="Client or member testimonial with a navy hairline.">
+    <div class="g-demo">
+      <figure class="yucg-quote">
+        <blockquote>The YUCG team gave us a market sizing we used in our Series A deck.</blockquote>
+        <figcaption>Founder, consumer health startup (placeholder)</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ================= Actions ================= -->
+  <h2 class="g-group-title" data-group="Actions">Actions</h2>
+
+  <article class="g-entry" id="yucg-btn" data-name="yucg-btn" data-title="Buttons" data-use="Square ghost buttons. Navy on white, --light on navy or photos, --block for full width. Group them with yucg-btn-group.">
+    <div class="g-demo g-demo--bleed">
+      <div class="g-row2" style="gap:0">
+        <div style="padding:32px" class="g-stack">
+          <div class="yucg-btn-group"><a class="yucg-btn" href="#yucg-btn">About Us</a><button class="yucg-btn" type="button" disabled>Disabled</button></div>
+          <button class="yucg-btn yucg-btn--block" type="button">Run analysis</button>
+        </div>
+        <div style="padding:32px;background:var(--yucg-navy)" class="yucg-band--navy">
+          <div class="yucg-btn-group"><a class="yucg-btn yucg-btn--light" href="#yucg-btn">About Us</a><a class="yucg-btn yucg-btn--light" href="#yucg-btn">Join Us</a></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-segmented" data-name="yucg-segmented" data-title="Segmented control" data-use="Two to four mutually exclusive options. The selected one fills navy. Try it.">
+    <div class="g-demo" style="max-width:520px">
+      <div class="yucg-segmented" role="group" aria-label="Mode">
+        <button type="button" aria-pressed="true">Single subreddit</button>
+        <button type="button" aria-pressed="false">Multi-subreddit</button>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-link" data-name="yucg-link" data-title="Text link" data-use="Inline navy link with an offset underline. Never the Wix blue.">
+    <div class="g-demo"><p>Read the <a class="yucg-link" href="#yucg-link">2025 annual report</a> for a full list of client projects.</p></div>
+  </article>
+
+  <!-- ================= Forms ================= -->
+  <h2 class="g-group-title" data-group="Forms">Forms</h2>
+
+  <article class="g-entry" id="yucg-field" data-name="yucg-field" data-title="Field" data-use="Label, underlined control and hint. Works for text, number, password, select and textarea. The underline turns navy on focus.">
+    <div class="g-demo">
+      <div class="g-row2">
+        <div class="yucg-field">
+          <label for="d-sub">Subreddit</label>
+          <div class="yucg-field__control"><span class="yucg-field__prefix">r/</span><input id="d-sub" type="text" placeholder="travel"></div>
+          <span class="yucg-field__hint">Without "r/".</span>
+        </div>
+        <div class="yucg-field">
+          <label for="d-range">Time range</label>
+          <div class="yucg-field__control"><select id="d-range"><option>Past week</option><option selected>Past year</option><option>All time</option></select></div>
+        </div>
+        <div class="yucg-field">
+          <label for="d-q">Search query</label>
+          <div class="yucg-field__control"><input id="d-q" type="text" value="Turkish Airlines"></div>
+        </div>
+        <div class="yucg-field">
+          <label for="d-max">Max posts</label>
+          <div class="yucg-field__control"><input id="d-max" type="number" placeholder="No limit"></div>
+          <span class="yucg-field__error">Enter a number from 1 to 500.</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-range" data-name="yucg-range" data-title="Range" data-use="Slider with its live value on the right. Try it.">
+    <div class="g-demo" style="max-width:520px">
+      <div class="yucg-field"><label for="d-n">Max locations</label><div class="yucg-range"><input id="d-n" type="range" min="1" max="20" value="10"><output for="d-n">10</output></div></div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-check" data-name="yucg-check" data-title="Checkbox and radio" data-use="Native controls tinted navy.">
+    <div class="g-demo">
+      <label class="yucg-check"><input type="checkbox" id="d-c1" checked> Include comments</label>
+      <label class="yucg-check"><input type="checkbox" id="d-c2"> Exclude deleted posts</label>
+      <label class="yucg-check"><input type="radio" name="d-r" id="d-r1" checked> Weekly</label>
+      <label class="yucg-check"><input type="radio" name="d-r" id="d-r2"> Monthly</label>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-dropzone" data-name="yucg-dropzone" data-title="Drop zone" data-use="File upload area with a faint navy fill and dashed gray edge. Darkens while a file is dragged over it. Try dropping a file.">
+    <div class="g-demo">
+      <label class="yucg-dropzone" for="d-files"><strong>Drop transcript files here or click to browse</strong><span id="d-files-msg">.docx and .txt</span><input id="d-files" type="file" multiple hidden></label>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-note" data-name="yucg-note" data-title="Note" data-use="Instructions or a short callout. Faint navy fill, no border.">
+    <div class="g-demo"><p class="yucg-note"><strong>Instructions:</strong> Enter a subreddit name (without "r/") and a search query to analyze sentiment of Reddit discussions.</p></div>
+  </article>
+
+  <article class="g-entry" id="yucg-form-group" data-name="yucg-form-group" data-title="Form group" data-use="A titled group of fields with a navy rule under the title.">
+    <div class="g-demo" style="max-width:520px">
+      <fieldset class="yucg-form-group">
+        <legend>Settings</legend>
+        <div class="yucg-field"><label for="d-tr">Time range</label><div class="yucg-field__control"><select id="d-tr"><option>Past year</option></select></div></div>
+        <div class="yucg-field"><label for="d-mp">Max posts (optional)</label><div class="yucg-field__control"><input id="d-mp" type="number" placeholder="No limit"></div></div>
+      </fieldset>
+    </div>
+  </article>
+
+  <!-- ================= Data ================= -->
+  <h2 class="g-group-title" data-group="Data">Data</h2>
+
+  <article class="g-entry" id="yucg-kpis" data-name="yucg-kpis" data-title="KPI row" data-use="Headline numbers for dashboards and results, split by hairlines.">
+    <div class="g-demo">
+      <div class="yucg-kpis">
+        <div><strong>260</strong><span>Posts analyzed</span></div>
+        <div><strong>8,412</strong><span>Comments read</span></div>
+        <div><strong>+0.21</strong><span>Mean sentiment</span></div>
+        <div><strong>58%</strong><span>Positive posts</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-chart-block" data-name="yucg-chart-block" data-title="Chart block" data-use="Wrapper for any chart: navy serif title and a muted subtitle above the chart.">
+    <div class="g-demo">
+      <figure class="yucg-chart-block">
+        <figcaption><strong>Analyses by tool</strong><span>Last 30 days, example figures</span></figcaption>
+        <div class="yucg-bars">
+          <div><span>Reddit Analyzer</span><i style="width:100%"></i><b>96</b></div>
+          <div><span>Sentiment Analyzer</span><i style="width:64%"></i><b>61</b></div>
+          <div><span>Google Reviews</span><i style="width:57%"></i><b>55</b></div>
+        </div>
+      </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-bars" data-name="yucg-bars" data-title="Bars" data-use="Horizontal bars in plain HTML. Width is a percentage of the largest value. .is-secondary turns a bar gray.">
+    <div class="g-demo">
+      <div class="yucg-bars">
+        <div><span>Consulting</span><i style="width:100%"></i><b>42%</b></div>
+        <div><span>Finance</span><i style="width:62%"></i><b>26%</b></div>
+        <div><span>Technology</span><i style="width:43%"></i><b>18%</b></div>
+        <div><span>Other</span><i class="is-secondary" style="width:33%"></i><b>14%</b></div>
+      </div>
+      <p class="g-caption" style="margin-top:16px">Example figures.</p>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-diverging" data-name="yucg-diverging" data-title="Diverging bars" data-use="Scores from −1 to +1. Positive grows right in navy, negative grows left in gray. Use divStyle(v) for the inline style.">
+    <div class="g-demo">
+      <div class="yucg-diverging" id="d-div"></div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-mix" data-name="yucg-mix" data-title="Mix bar and legend" data-use="100% stacked bar for shares such as positive, neutral and negative, with square legend swatches (yucg-legend).">
+    <div class="g-demo g-stack" style="gap:14px">
+      <div class="yucg-mix" role="img" aria-label="Positive 58%, neutral 27%, negative 15%"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
+      <div class="yucg-legend"><span><i class="is-pos"></i>Positive</span><span><i class="is-neu"></i>Neutral</span><span><i class="is-neg"></i>Negative</span></div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-line-chart" data-name="yucg-line-chart" data-title="Line chart" data-use="SVG from yucgLineChart(): dashed light gridlines, square endpoint, optional navy area fill, second series in gray." data-code="document.querySelector('#chart').innerHTML = yucgLineChart({
+  labels: ['Oct 1', 'Oct 2', …],
+  series: [
+    { values: visits, color: '#1C366A', area: true },
+    { values: runs,   color: '#A0A09F' }
+  ]
+});">
+    <div class="g-demo">
+      <figure class="yucg-chart-block">
+        <figcaption><strong>Daily visits and analyses</strong><span>Last 30 days, example figures</span></figcaption>
+        <div id="d-line"></div>
+        <div class="yucg-legend"><span><i class="is-pos"></i>Visits</span><span><i class="is-neu"></i>Analyses run</span></div>
+      </figure>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-table" data-name="yucg-table" data-title="Table" data-use="Navy header rule, gray row rules, right-aligned tabular numbers. Scrolls sideways on its own when narrow.">
+    <div class="g-demo">
+      <div class="yucg-table">
+        <table>
+          <thead><tr><th>Post</th><th>Subreddit</th><th class="is-num">Upvotes</th><th class="is-num">Score</th></tr></thead>
+          <tbody>
+            <tr><td>Upgraded today and loved it</td><td>r/travel</td><td class="is-num">1,204</td><td class="is-num">+0.82</td></tr>
+            <tr><td>Lounge experience was excellent</td><td>r/awardtravel</td><td class="is-num">688</td><td class="is-num">+0.74</td></tr>
+            <tr><td>Cancelled my connection with no notice</td><td>r/travel</td><td class="is-num">2,031</td><td class="is-num">−0.79</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-chip" data-name="yucg-chip" data-title="Chips" data-use="Tags and keywords. Navy outline, gray for negative (.is-neg). Wrap in yucg-chips.">
+    <div class="g-demo"><div class="yucg-chips"><span class="yucg-chip">friendly · +0.71</span><span class="yucg-chip">quality · +0.55</span><span class="yucg-chip">clean · +0.48</span><span class="yucg-chip is-neg">slow · −0.45</span><span class="yucg-chip is-neg">expensive · −0.38</span></div></div>
+  </article>
+
+  <!-- ================= Disclosure ================= -->
+  <h2 class="g-group-title" data-group="Disclosure">Disclosure</h2>
+
+  <article class="g-entry" id="yucg-accordion" data-name="yucg-accordion" data-title="Accordion" data-use="FAQ rows or per-item detail on native details elements, so it works without script.">
+    <div class="g-demo">
+      <div class="yucg-accordion">
+        <details open><summary>How do I apply to YUCG?</summary><div>Applications open at the start of each semester. Placeholder answer: replace with the real process.</div></details>
+        <details><summary>Do I need business experience?</summary><div>Placeholder answer.</div></details>
+        <details><summary>How much time does a project take?</summary><div>Placeholder answer.</div></details>
+      </div>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-tabs" data-name="yucg-tabs" data-title="Tabs" data-use="Text tabs in the nav style. The active tab is full strength with a navy rule beneath. Try it.">
+    <div class="g-demo">
+      <div class="yucg-tabs" role="tablist" id="d-tabs">
+        <button role="tab" aria-selected="true">Overview</button>
+        <button role="tab" aria-selected="false">Results</button>
+        <button role="tab" aria-selected="false">Methodology</button>
+      </div>
+      <p style="padding-top:20px" id="d-tab-body">Overview panel.</p>
+    </div>
+  </article>
+
+  <article class="g-entry" id="yucg-gate" data-name="yucg-gate" data-title="Gate" data-use="Small centered form for a password, sign-up or single question.">
+    <div class="g-demo">
+      <form class="yucg-gate" onsubmit="event.preventDefault()">
+        <h2>Analytics Access</h2>
+        <p>Enter the analytics password to continue.</p>
+        <div class="yucg-field"><label for="d-pw">Password</label><div class="yucg-field__control"><input id="d-pw" type="password" autocomplete="off"></div></div>
+        <button class="yucg-btn yucg-btn--block" type="submit">Unlock</button>
+      </form>
+    </div>
+  </article>
+
+  <!-- ================= Recipes ================= -->
+  <h2 class="g-group-title" data-group="Recipes" id="g-recipes">Recipes</h2>
+
+  <article class="g-entry" id="yucg-workspace" data-name="yucg-workspace" data-title="Tool page" data-use="Recipe: form column on the left, results on the right, stacking on phones. Built entirely from the components above.">
+    <div class="g-demo">
+      <div class="yucg-workspace">
+        <form onsubmit="event.preventDefault()">
+          <div class="yucg-segmented" role="group" aria-label="Mode"><button type="button" aria-pressed="true">Single</button><button type="button" aria-pressed="false">Multi</button></div>
+          <p class="yucg-note"><strong>Instructions:</strong> Enter a subreddit and a search query.</p>
+          <fieldset class="yucg-form-group">
+            <legend>Settings</legend>
+            <div class="yucg-field"><label for="w-sub">Subreddit</label><div class="yucg-field__control"><span class="yucg-field__prefix">r/</span><input id="w-sub" type="text" value="travel"></div></div>
+            <div class="yucg-field"><label for="w-q">Search query</label><div class="yucg-field__control"><input id="w-q" type="text" value="Turkish Airlines"></div></div>
+          </fieldset>
+          <button class="yucg-btn yucg-btn--block" type="submit">Analyze Reddit</button>
+        </form>
+        <div>
+          <div class="yucg-kpis"><div><strong>260</strong><span>Posts</span></div><div><strong>+0.21</strong><span>Mean sentiment</span></div><div><strong>58%</strong><span>Positive</span></div></div>
+          <figure class="yucg-chart-block">
+            <figcaption><strong>Sentiment mix</strong><span>Example figures</span></figcaption>
+            <div class="yucg-mix"><i class="is-pos" style="width:58%">58%</i><i class="is-neu" style="width:27%">27%</i><i class="is-neg" style="width:15%">15%</i></div>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <p class="g-empty" id="g-none" hidden>No component matches that filter.</p>
+  </main>
+</div>
+
+<footer class="yucg-footer">
+  <div class="yucg-container yucg-footer__inner">
+    <div><img src="data:image/png;base64,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" alt="YUCG"><p>YUCG Design System · design.md section 11</p></div>
+  </div>
+</footer>
+
+<script>
+/* ===== Library JS: extracted verbatim from design.md section 11 ===== */
+document.querySelectorAll('.yucg-segmented').forEach(g => g.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+}));
+
+document.querySelectorAll('.yucg-range input').forEach(r => r.addEventListener('input', () => r.nextElementSibling.value = r.value));
+
+document.querySelectorAll('.yucg-dropzone').forEach(z => {
+  ['dragenter', 'dragover'].forEach(t => z.addEventListener(t, e => { e.preventDefault(); z.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach(t => z.addEventListener(t, e => { e.preventDefault(); z.classList.remove('is-over'); }));
+  // on 'drop', read e.dataTransfer.files
+});
+
+// value in [-1, 1] → inline style for the <i>
+const divStyle = v => `left:${v >= 0 ? 50 : 50 + v * 50}%;width:${Math.abs(v) * 50}%`;
+
+// yucgLineChart({ labels: [...], series: [{ values: [...], color: '#1C366A', area: true }], min: 0, max })
+function yucgLineChart({ labels, series, min = 0, max, fmtY = v => v.toLocaleString('en-US') }) {
+  const W = 720, H = 250, m = { t: 14, r: 18, b: 30, l: 46 };
+  const hi = max ?? (v => { const p = 10 ** Math.floor(Math.log10(v || 1)); return Math.ceil(v / p) * p; })(Math.max(...series.flatMap(s => s.values)));
+  const x = i => m.l + (W - m.l - m.r) * i / Math.max(labels.length - 1, 1);
+  const y = v => H - m.b - (H - m.t - m.b) * (v - min) / (hi - min);
+  let g = '';
+  for (let k = 0; k <= 4; k++) { const v = min + (hi - min) * k / 4;
+    g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#E2E2E1" stroke-dasharray="${v === 0 ? 0 : '3 4'}"/>`
+       + `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${fmtY(v)}</text>`; }
+  const step = Math.ceil(labels.length / 8);
+  labels.forEach((l, i) => { if (i % step === 0 || i === labels.length - 1) g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${l}</text>`; });
+  series.forEach(s => {
+    const d = s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join('');
+    if (s.area) g += `<path d="${d}L${x(s.values.length - 1)},${y(Math.max(min, 0))}L${x(0)},${y(Math.max(min, 0))}Z" fill="rgba(28,54,106,.08)"/>`;
+    g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.25"${s.dash ? ' stroke-dasharray="5 5"' : ''}/>`;
+    const li = s.values.length - 1; g += `<rect x="${x(li) - 4}" y="${y(s.values[li]) - 4}" width="8" height="8" fill="${s.color}"/>`;
+  });
+  return `<div class="yucg-line-chart"><svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg></div>`;
+}
+
+</script>
+<script>
+/* ===== Gallery script ===== */
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const escHTML = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// pretty-print a demo's markup for the "Show markup" panel
+function pretty(html) {
+  let out = '', depth = 0;
+  const voids = /^(img|input|br|hr|meta|link|source|path|rect|circle|line)$/i;
+  html.replace(/\s*\n\s*/g, ' ').split(/(<[^>]+>)/).filter(t => t.trim()).forEach(tok => {
+    const close = /^<\//.test(tok), open = /^<[a-z]/i.test(tok), name = (tok.match(/^<\/?([a-z0-9-]+)/i) || [])[1] || '';
+    if (close) depth = Math.max(0, depth - 1);
+    out += '  '.repeat(depth) + tok.trim() + '\n';
+    if (open && !voids.test(name) && !/\/>$/.test(tok)) depth++;
+  });
+  // join short open/text/close runs onto one line
+  return out.replace(/^( *)(<([a-z0-9-]+)[^>]*>)\n\s*([^<\n]+)\n\s*(<\/\3>)$/gim, '$1$2$4$5')
+            .replace(/data:image\/[^"]{60,}/g, 'logo.png').trim();
+}
+
+// build entry headers, markup panels and the index
+const groups = [];
+$$('#g-main > .g-group-title, #g-main > .g-entry').forEach(el => {
+  if (el.classList.contains('g-group-title')) { groups.push({ title: el.dataset.group, el, items: [] }); return; }
+  groups[groups.length - 1].items.push(el);
+  const head = document.createElement('div');
+  head.className = 'g-entry-head';
+  head.innerHTML = `<h3>${el.dataset.title}</h3><button type="button" class="g-name" title="Copy name">${el.dataset.name}</button>`;
+  const use = document.createElement('p'); use.className = 'g-use'; use.textContent = el.dataset.use;
+  el.prepend(head, use);
+  const demo = $('.g-demo', el);
+  const code = el.dataset.code || pretty(demo.innerHTML);
+  const d = document.createElement('details'); d.className = 'g-code';
+  d.innerHTML = `<summary>${el.dataset.code ? 'Show usage' : 'Show markup'}</summary><pre><code>${escHTML(code)}</code></pre>`;
+  el.append(d);
+});
+$('#g-nav').innerHTML = groups.map(g => `<div><h2>${g.title}</h2><ul>${g.items.map(i => `<li><a href="#${i.id}" data-for="${i.id}">${i.dataset.title}</a></li>`).join('')}</ul></div>`).join('');
+
+// copy names
+let toastTimer;
+function toast(msg) {
+  let t = $('.g-toast'); if (!t) { t = document.createElement('div'); t.className = 'g-toast'; t.setAttribute('role', 'status'); document.body.append(t); }
+  t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 1600);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.g-name'); if (!b) return;
+  const name = b.textContent;
+  navigator.clipboard?.writeText(name).then(() => toast(`Copied ${name}`), () => toast(name)) ?? toast(name);
+});
+
+// filter
+$('#g-q').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase(); let any = false;
+  groups.forEach(g => {
+    let shown = 0;
+    g.items.forEach(i => { const hit = !q || (i.dataset.name + ' ' + i.dataset.title + ' ' + i.dataset.use).toLowerCase().includes(q); i.hidden = !hit; shown += hit; });
+    g.el.hidden = !shown; any ||= shown > 0;
+    $$(`#g-nav a`).forEach(a => a.parentElement.hidden = $('#' + a.dataset.for).hidden);
+  });
+  $('#g-none').hidden = any;
+});
+
+// highlight the entry in view
+const io = new IntersectionObserver(es => es.forEach(en => {
+  if (en.isIntersecting) { $$('#g-nav a').forEach(a => a.classList.toggle('is-here', a.dataset.for === en.target.id)); }
+}), { rootMargin: '-20% 0px -70% 0px' });
+$$('.g-entry').forEach(e => io.observe(e));
+
+// demo data
+$('#d-div').innerHTML = [['Erin Yoon', .42], ['Marcus Lee', -.12], ['Priya Shah', .63], ['Jordan Park', -.38]]
+  .map(([n, v]) => `<div><span>${n}</span><p><i class="${v < 0 ? 'is-neg' : ''}" style="${divStyle(v)}"></i></p><b>${(v > 0 ? '+' : '−') + Math.abs(v).toFixed(2)}</b></div>`).join('');
+{
+  let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const labels = Array.from({ length: 30 }, (_, i) => `Oct ${i + 1}`);
+  const visits = labels.map((_, i) => Math.round(30 + 14 * Math.sin(i / 3.2) + i * .9 + r() * 14));
+  const runs = visits.map(v => Math.round(v * (.15 + r() * .1)));
+  $('#d-line').innerHTML = yucgLineChart({ labels, series: [{ values: visits, color: '#1C366A', area: true }, { values: runs, color: '#A0A09F' }] });
+}
+$('#d-files').addEventListener('change', e => $('#d-files-msg').textContent = `${e.target.files.length} file(s) selected`);
+$('#yucg-dropzone .yucg-dropzone').addEventListener('drop', e => $('#d-files-msg').textContent = `${e.dataTransfer.files.length} file(s) dropped`);
+$('#d-tabs').addEventListener('click', e => {
+  const b = e.target.closest('[role=tab]'); if (!b) return;
+  $$('#d-tabs [role=tab]').forEach(x => x.setAttribute('aria-selected', x === b));
+  $('#d-tab-body').textContent = `${b.textContent} panel.`;
+});
+$$('.yucg-nav__more a').forEach(a => a.addEventListener('click', () => a.closest('details').open = false));
+
+if (location.hash && $(location.hash)) setTimeout(() => $(location.hash).scrollIntoView(), 50);
+</script>
